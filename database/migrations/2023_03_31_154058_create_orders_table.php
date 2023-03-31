@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,7 +13,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->enum('status',['new','processing','waitingCustConfirmation','cancelled','confirmed','delivered']);
+            $table->enum('status', ['new','processing','waitingCustConfirmation','cancelled','confirmed','delivered']);
             $table->boolean('is_insured');
             $table->unsignedBigInteger('delivery_address_id');
             $table->foreign('delivery_address_id')->references('id')->on('addresses');
