@@ -19,19 +19,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->string('national_id');
-            $table->primary('national_id');
-            $table->string('name');
-            $table->string('gender');
-            $table->date('DOB');
-            $table->string('mob_num');
-            $table->string('avatar');
+            $table->id();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->boolean('is_admin')->default(0);
             $table->rememberToken();
             $table->timestamps();
+            $table->enum("type",['doctor','pharmacy','admin','end_user']);
         });
     }
 

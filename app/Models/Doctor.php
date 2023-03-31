@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Doctor extends Model
+class Doctor extends User
 {
     use HasFactory;
     
@@ -19,4 +19,9 @@ class Doctor extends Model
         'password',
         'remember_token',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

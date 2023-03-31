@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('address', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('st_name');
@@ -21,8 +21,8 @@ return new class extends Migration
             $table->boolean('is_main')->default(0);
             $table->unsignedBigInteger('area_id');
             $table->foreign('area_id')->references('id')->on('areas');
-            $table->string('user_id');
-            $table->foreign('user_id')->references('national_id')->on('users');
+            $table->unsignedBigInteger('end_user_id');
+            $table->foreign('end_user_id')->references('id')->on('end_users');
         });
     }
 
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('address');
+        Schema::dropIfExists('addresses');
     }
 };

@@ -5,15 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Prescription extends Model
+class EndUser extends User
 {
     use HasFactory;
     protected $fillable = [
-        'order_id',
-        'prescription'
+        'DOB',
+        'gender',
+        'mobile_no',
+        'avatar'
     ];
-    public function order()
+    public function user()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(User::class);
     }
 }

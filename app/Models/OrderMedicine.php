@@ -5,15 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Prescription extends Model
+class OrderMedicine extends Model
 {
     use HasFactory;
     protected $fillable = [
         'order_id',
-        'prescription'
+        'medicine_id',
+        'qty',
     ];
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+    public function medicine()
+    {
+        return $this->hasMany(Medicine::class);
     }
 }
