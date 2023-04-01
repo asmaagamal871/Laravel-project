@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('end_users', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('gender');
+            $table->enum('gender',['male','female']);
             $table->date('DOB');
             $table->string('mob_num');
-            $table->string('avatar');
+            $table->string('image')->default('public/doctors/default.png');
+            
         });
     }
 

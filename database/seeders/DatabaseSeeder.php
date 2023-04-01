@@ -13,21 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $this->call(PharmacySeeder::class);
+        $this->call(DoctorSeeder::class);
+        $this->call(EndUserSeeder::class);
+        $this->call(PermissionsSeeder::class);
+        $this->call(AdminSeeder::class);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-        $faker = Faker::create();
-
-        for ($i = 0; $i < 200; $i++) {
-            DB::table('users')->insert([
-                'name' => $faker->name($nbWords = 6, $variableNbWords = true),
-                'email' => $faker->email($nbSentences = 2, $variableNbSentences = true),
-                'password' => $faker->password($maxNbChars = 8),
-            ]);
-        }
-    
     }
 }

@@ -12,9 +12,9 @@ return new class () extends Migration {
     {
         Schema::create('order_include_medicine', function (Blueprint $table) {
             $table->timestamps();
-            $table->unsignedBigInteger('order_id');
+            $table->unsignedBigInteger('order_id')->nullable();
             $table->foreign('order_id')->references('id')->on('orders');
-            $table->unsignedBigInteger('medicine_id');
+            $table->unsignedBigInteger('medicine_id')->nullable();
             $table->foreign('medicine_id')->references('id')->on('medicines');
             $table->primary(array('order_id','medicine_id'));
             $table->integer('qty');
