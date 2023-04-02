@@ -13,14 +13,13 @@ return new class () extends Migration {
         Schema::create('pharmacies', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name');
             $table->string('national_id');
-            $table->string('image');
-            $table->unsignedBigInteger('area_id');
+            $table->string('image')->default('public/doctors/default.png');
+            $table->unsignedBigInteger('area_id')->nullable();
             $table->foreign('area_id')->references('id')->on('areas');
             $table->integer('priority');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            // $table->unsignedBigInteger('user_id');
+            // $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

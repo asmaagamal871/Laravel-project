@@ -2,21 +2,18 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Pharmacy;
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use App\Models\User;
 
 class PharmacySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
 
-        Pharmacy::factory()->count(10)->create();
-        
-        //
-
+        Pharmacy::factory(5)->create()->each(function ($user) {
+            $user->type()->save(User::factory()->create());
+        });
     }
 }

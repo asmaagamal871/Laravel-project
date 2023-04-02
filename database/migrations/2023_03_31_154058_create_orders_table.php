@@ -17,11 +17,11 @@ return new class () extends Migration {
             $table->boolean('is_insured');
             $table->unsignedBigInteger('delivery_address_id');
             $table->foreign('delivery_address_id')->references('id')->on('addresses');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('end_users');
-            $table->unsignedBigInteger('doctor_id');
+            $table->unsignedBigInteger('doctor_id')->nullable();
             $table->foreign('doctor_id')->references('id')->on('doctors');
-            $table->unsignedBigInteger('pharmacy_id');
+            $table->unsignedBigInteger('pharmacy_id')->nullable();
             $table->foreign('pharmacy_id')->references('id')->on('pharmacies');
             $table->string('visa')->nullable();
         });
