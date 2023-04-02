@@ -55,6 +55,8 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'mobile_no'=>['required', 'string', 'min:11', 'unique:end_users,mob_num'],
+            'dateOfBirth'=>['required']
         ]);
     }
 
@@ -67,7 +69,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $path = 'public/doctors/default.png';
-        if ($data['avatar']) {
+        if (request()->file('avatar')) {
             $path = Storage::putFileAs(
                 'public/endUsers',
                 request()->file('avatar'),
@@ -79,7 +81,8 @@ class RegisterController extends Controller
             [
                 'gender' => $data['gender'],
                 'image' => $path,
-                'DOB'=>$data['dateOfBirth']
+                'DOB'=>$data['dateOfBirth'],
+                'mob_num'=>$data['mobile_no']
             ]
         );
 
@@ -97,3 +100,5 @@ class RegisterController extends Controller
         return $mainUser;
     }
 }
+
+

@@ -24,6 +24,20 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <div class="row mb-3">
+                            <label class="col-md-4 col-form-label text-md-end">Phone number</label>
+                            <div class="col-md-6">
+                                <input name="mobile_no" class="form-control @error('mobile_no') is-invalid @enderror"  type="text">
+                                
+                                @error('mobile_no')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="row mb-3">
                             <label class="col-md-4 col-form-label text-md-end">Gender</label>
                             <div class="col-md-6">
@@ -45,7 +59,13 @@
                         <div class="row mb-3">
                             <label for="dateOfBirth" class="col-md-4 col-form-label text-md-end">Date of Birth</label>
                             <div class="col-md-6">
-                                <input type="date" style="border-radius: 5px;border:1px solid lightgray;padding: 8px;"   id="dateOfBirth" name="dateOfBirth" placeholder="dd-mm-yyyy" min="1997-01-01" max="2030-12-31">
+                                <input type="date" class=" form-control @error('dateOfBirth') is-invalid @enderror " id="dateOfBirth" name="dateOfBirth" placeholder="dd-mm-yyyy" min="1997-01-01" max="2030-12-31">
+                                
+                                @error('dateOfBirth')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
 
