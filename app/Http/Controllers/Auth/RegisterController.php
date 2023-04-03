@@ -54,7 +54,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
             'mobile_no'=>['required', 'string', 'min:11', 'unique:end_users,mob_num'],
             'dateOfBirth'=>['required']
         ]);
@@ -85,6 +85,9 @@ class RegisterController extends Controller
                 'mob_num'=>$data['mobile_no']
             ]
         );
+
+        $newUser->assignRole('end-user');
+        $newUser->givePermissionTo(['manage-own-addresses', 'manage-own-orders', 'update-own-user-info']);
 
         $mainUser = User::factory()->create(
             [
