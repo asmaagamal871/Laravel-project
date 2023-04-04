@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Prescription extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'order_id',
+        'prescription'
+    ];
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 }

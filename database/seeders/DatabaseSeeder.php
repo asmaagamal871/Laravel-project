@@ -1,7 +1,8 @@
 <?php
 
 namespace Database\Seeders;
-
+use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,11 +13,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->call(PharmacySeeder::class);
+        $this->call(DoctorSeeder::class);
+        $this->call(EndUserSeeder::class);
+        $this->call(PermissionsSeeder::class);
+        $this->call(AdminSeeder::class);
+        $this->call(AddressSeeder::class);
+        $this->call(MedicineSeeder::class);
     }
 }

@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Traits\HasRoles;
 
-class Pharmacy extends Model
+class Pharmacy extends User
 {
-    use HasFactory;
+    use HasFactory,HasRoles;
+    
+    protected $table = 'pharmacies';
+
     protected $fillable = [
         'name',
         'email',
@@ -18,4 +22,8 @@ class Pharmacy extends Model
         'password',
         'remember_token',
     ];
+    public function type()
+    {
+        return $this->morphOne(User::class,'typeable');
+    }
 }
