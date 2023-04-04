@@ -71,9 +71,8 @@ Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('ord
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-// Route::get('/users', function () {
-//     return view("welcome");
-// });
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 
 //USER
 Route::get('/users', [UserController::class,'index'])->name('users.index');

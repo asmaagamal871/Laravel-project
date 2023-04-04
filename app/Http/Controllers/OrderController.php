@@ -6,16 +6,26 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\Prescription;
+use App\Models\OrderMedicine;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreOrderRequest;
-use App\Models\OrderMedicine;
 
 class OrderController extends Controller
 {
-    public  function index()
+    // use HasRoles;
+    public function index()
     {
-        $allOrders = Order::all(); //select * from posts
+        $user = Auth::user();
+        
+        if ($user->can('manage-orders')) {
+            $allOrders = Order::all(); //select * from posts
+        } if($user->can('manage-own-orders')) {
+            $allOrders = Order::where('user_id', $user->typeable->id)->get();
+        }if($user->can('view-orders')){
+            $allOrders = Order::where('pharmacy_id', $user->typeable->id)->get();
+        }
         return view('order.index', ['orders' => $allOrders]);
     }
     public function create()
