@@ -9,4 +9,6 @@ use Spatie\Permission\Traits\HasRoles;
 class Area extends Model
 {
     use HasFactory,HasRoles ;
+    protected $table = 'areas';
+
 }

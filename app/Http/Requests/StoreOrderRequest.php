@@ -11,7 +11,7 @@ class StoreOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,9 +22,9 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'address' => ['required', 'exists:address,id'],
-            'is_insured'=>['required'],
-            'Prescriptions'=>['required']
+            'address' => ['required', 'exists:addresses,id'],
+            'radio' => ['required'],
+            'Prescriptions' => ['required']
         ];
     }
 }

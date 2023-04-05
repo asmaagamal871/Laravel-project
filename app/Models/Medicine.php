@@ -9,4 +9,6 @@ use Spatie\Permission\Traits\HasRoles;
 class Medicine extends Model
 {
     use HasFactory,HasRoles ;
+    protected $table = 'medicines';
+
 }
