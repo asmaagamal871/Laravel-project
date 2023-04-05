@@ -27,9 +27,9 @@ class StoreAddressRequest extends FormRequest
             'building_no' =>['required'] ,
             'floor_no' => ['required'],
             'flat_no' =>['required'],
-            'is_main' =>['required'],
+            'radio' =>['required'],
             'area_id' => ['required'],
-            'end_user_id' =>['required'],
+            'user_id' =>['required'],
 
 
         ];
