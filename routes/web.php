@@ -1,4 +1,5 @@
 <?php
+
 use App\Models\User;
 use App\Http\Controllers\MedicineController;
 use Illuminate\Support\Facades\Route;
@@ -7,9 +8,11 @@ use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\SendMailController;
 
 
+use App\Notifications\MailNotification;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Notification;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,14 +25,19 @@ use App\Http\Controllers\UserController;
 |
 */
 
-// Route::get('/medicines', function  () {
-//     return view("welcome");
-// });
+Route::get('/', function  () {
+User::find(1)->notifiy(new MailNotification);
+//$users=User::find(1);
+   // Notification::send($users,new MailNotification());
+    return view("welcome");
+
+});
 
 
 
 //////////////////////////////////////////////////////medicines//////////////////////////////////////////
 Route::get('/medicines',[MedicineController::class,'index'])->name(('medicines.index'));
+
 Route::get('/medicines/create', [MedicineController::class, 'createMedicine'])->name('medicines.create');
  Route::post('/medicines/store', [MedicineController::class, 'storeMedicine'])->name('medicines.store');
  Route::get('/medicines/{medicine}/edit',[MedicineController::class,'editMedicine'])->name('medicines.edit');
@@ -48,6 +56,7 @@ Route::controller(StripePaymentController::class)->group(function(){
 
 ///////////////////////////////////////////////adresses////////////////////////////////////////////////////////
 Route::get('/addresses',[AddressController::class,'index'])->name(('addresses.index'));
+
 Route::get('/addresses/create', [AddressController::class, 'createAddress'])->name('addresses.create');
  Route::post('/addresses/store', [AddressController::class, 'storeAddress'])->name('addresses.store');
  Route::get('/addresses/{address}/edit',[AddressController::class,'editAddress'])->name('addresses.edit');

@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Jobs;
-
+use App\Notifications\MailNotification;
+//use App\Jobs\SendMailJob;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -10,22 +11,23 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Notifications\Notification;
 class SendMailJob implements ShouldQueue
+
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $details;
-   // public $timeout = 7200; // 2 hours
+    protected $client;
+  //public $timeout = 7200; // 2 hours
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($details)
+    public function __construct($client)
     {
-        $this->details = $details;
+        $this->client = $client;
     }
 
     /**
@@ -35,19 +37,7 @@ class SendMailJob implements ShouldQueue
      */
     public function handle()
     {
-        $users = User::all();
-        $input['title'] = $this->details['title'];
-        $input['body'] = $this->details['body'];
-
-        foreach ($users as $user) {
-            $input['name'] = $user->name;
-            $input['email'] = $user->email;
-
-            Mail::send('mail.test_mail', ['input' => $input], function ($message) use ($input) {
-                $message->to($input['email'], $input['name'])
-                    ->subject($input['title']);
-            });
-        }
-
+      
+        $this->client->notifiy((new MailNotification));
     }
 }

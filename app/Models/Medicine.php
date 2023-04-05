@@ -14,5 +14,9 @@ class Medicine extends Model
         'type',
         'price'
     ];
+    public function user()
+    {
+        return $this->belongsTo(EndUser::class);
+    }
  
 }

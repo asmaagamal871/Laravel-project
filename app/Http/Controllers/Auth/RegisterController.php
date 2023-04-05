@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use App\Jobs\SendMailJob;
 use App\Http\Controllers\Controller;
 use App\Models\EndUser;
 use App\Providers\RouteServiceProvider;
@@ -98,7 +98,7 @@ class RegisterController extends Controller
                 'typeable_id' => $newUser->id
             ]
         );
-
+      
         $newUser->type()->save($mainUser);
         return $mainUser;
     }

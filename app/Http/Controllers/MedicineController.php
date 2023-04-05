@@ -1,18 +1,27 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Medicine;
-use Illuminate\Http\Request;
 
+use App\Http\Requests\StoreMedicineRequest;
+use App\Models\Medicine;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 class MedicineController extends Controller
 {
     //============================================index============================================
     public function index()
     {
+      $user = Auth::user();
+        
+     if ($user->can('manage-medicines')) {
+ 
+   //select * from posts
     $allmedicine=Medicine::all();
-
-       //dd($allmedicine);
     return view('medicines.index', ['medicines' => $allmedicine]);
+      }
+       //dd($allmedicine);
+   
     }
   //   //============================================show======================================
     public function showMedicine($id)
@@ -27,13 +36,17 @@ class MedicineController extends Controller
      return view('medicines.create');
     }
   //   //=============================================store=================================================================
-    public function storeMedicine(Request $request)
+    public function storeMedicine(StoreMedicineRequest $request)
     {
+      $valid_request = $request->validated();
+
        $name=request()->name;
        $type=request()->type;
        $price=request()->price;
       // dd($name,$type,$price)
-      
+         $user = Auth::user();
+        
+     if ($user->can('manage-medicines')) {
 
         Medicine::create([
             'name' => $name,
@@ -42,6 +55,7 @@ class MedicineController extends Controller
          
 
         ]);
+      }
 
         return to_route(route:'medicines.index');
     }
@@ -62,13 +76,15 @@ class MedicineController extends Controller
       //  $medicine->name = $request->input('name');
       //  $medicine->type = $request->input('type');
       //  $medicine->price = $request->input('price');
-   
+      $user = Auth::user();
+        
+     if ($user->can('manage-medicines')) {
 $medicine->update([
   'name'=>$request->name,
   'type'=>$request->type,
   'price'=>$request->price
 
-]);
+]);}
      return to_route(route:'medicines.index');
 
     }
@@ -77,9 +93,12 @@ $medicine->update([
     {
      
     $medicine= Medicine::where('id', $id);
-    
+    $user = Auth::user();
+        
+  
 
       $medicine->delete();
+   
       return to_route(route:'medicines.index');
      
     }

@@ -45,6 +45,7 @@
                 @endforeach
             </select>
         </div>
+        @can('manage-addresses')
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">name of user</label>
             <select name="user_id" class="form-control">
@@ -53,7 +54,7 @@
                 @endforeach
             </select>
         </div>
-
+@endcan
       <button type="submit" class="btn btn-primary">create</button>
 </form>
 @endsection

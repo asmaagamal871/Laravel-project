@@ -9,6 +9,8 @@ use Spatie\Permission\Traits\HasRoles;
 class Address extends Model
 {
     use HasFactory,HasRoles ;
+    protected $table = 'addresses';
+
     protected $fillable = [
         'st_name',
         'building_no',
@@ -26,4 +28,9 @@ class Address extends Model
     {
         return $this->belongsTo(Area::class);
     }
+    public function type()
+    {
+        return $this->morphOne(User::class,'typeable');
+    }
+   
 }
