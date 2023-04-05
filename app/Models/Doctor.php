@@ -10,7 +10,7 @@ class Doctor extends User
 {
     use HasFactory,HasRoles;
     
-    // protected $table = 'doctors';
+     protected $table = 'doctors';
 
     protected $fillable = [
         'name',
@@ -26,5 +26,9 @@ class Doctor extends User
     public function type()
     {
         return $this->morphOne(User::class,'typeable');
+    }
+    public function pharmacy()
+    {
+        return $this->belongsTo(Pharmacy::class);
     }
 }

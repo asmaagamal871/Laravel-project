@@ -19,4 +19,6 @@ class Medicine extends Model
         return $this->belongsTo(EndUser::class);
     }
  
+    protected $table = 'medicines';
+
 }

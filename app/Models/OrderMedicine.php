@@ -9,6 +9,7 @@ use Spatie\Permission\Traits\HasRoles;
 class OrderMedicine extends Model
 {
     use HasFactory,HasRoles ;
+    protected $table = 'order_include_medicine';
 
     protected $fillable = [
         'order_id',

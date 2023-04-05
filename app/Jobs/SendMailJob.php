@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 use App\Notifications\MailNotification;
-//use App\Jobs\SendMailJob;
+
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -18,7 +18,7 @@ class SendMailJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $client;
-  //public $timeout = 7200; // 2 hours
+
 
     /**
      * Create a new job instance.

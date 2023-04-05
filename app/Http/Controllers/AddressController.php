@@ -15,14 +15,15 @@ class AddressController extends Controller
   public function index()
   {
     $user = Auth::user();
-    //$alladdress = Address::where('end_user_id', $user->typeable->id)->get();
+   
 
     if ($user->can('manage-own-addresses')) { //user is admin or end user
+      
       if ($user->can('manage-addresses')) { //if admin
         $alladdress = Address::all();
         return view('addresses.index', ['addresses' => $alladdress]);
       } else { //if end user
-        $alladdress = $user->addresses()->get();
+        $alladdress = $user->typeable->addresses()->get();
         return view('addresses.index', ['addresses' => $alladdress]);
       }
     } else {
@@ -103,7 +104,12 @@ class AddressController extends Controller
         'end_user_id' => $user->typeable->id,
 
       ]);
+      
     }
+    else {
+      abort(403, 'Unauthorized action.');
+    }
+    
 
     return to_route(route: 'addresses.index');
   }
@@ -148,6 +154,9 @@ class AddressController extends Controller
 
       ]);
     }
+    else {
+      abort(403, 'Unauthorized action.');
+    }
     return to_route(route: 'addresses.index');
   }
   //   //=================================================delete================================================
@@ -155,9 +164,17 @@ class AddressController extends Controller
   {
 
     $address = Address::where('id', $id);
+  //user is admin or end user
+  $user = Auth::user();
+  if ($user->can('manage-addresses')) { 
 
-
-    $address->delete();
+    $address->delete();}
+    else if('manage-own-addresses'){
+      $address->delete();
+    }
+    else {
+      abort(403, 'Unauthorized action.');
+    }
     return to_route(route: 'addresses.index');
   }
 }

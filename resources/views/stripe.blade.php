@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel - Stripe Payment Gateway Integration Example - ItSolutionStuff.com</title>
+  
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
@@ -9,7 +9,7 @@
     
 <div class="container">
     
-   
+    
     
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
@@ -26,14 +26,16 @@
                         </div>
                     @endif
     
-<form  role="form" action="{{ route('stripe.post') }}"  method="post" 
+                    <form 
+                            role="form" 
+                            action="{{ route('stripe.post') }}" 
+                            method="post" 
                             class="require-validation"
                             data-cc-on-file="false"
                             data-stripe-publishable-key="{{ env('STRIPE_KEY') }}"
                             id="payment-form">
                         @csrf
     
-                            
                         <div class='form-row row'>
                             <div class='col-xs-12 form-group required'>
                                 <label class='control-label'>Name on Card</label> <input
@@ -161,9 +163,3 @@ $(function() {
 });
 </script>
 </html>
-
-
-    
-
-
-
