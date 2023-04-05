@@ -9,6 +9,8 @@ use Spatie\Permission\Traits\HasRoles;
 class Medicine extends Model
 {
     use HasFactory,HasRoles;
+    protected $table = 'medicines';
+
     protected $fillable=[
         'name',
         'type',
@@ -19,6 +21,8 @@ class Medicine extends Model
         return $this->belongsTo(EndUser::class);
     }
  
-    protected $table = 'medicines';
-
+    public function orderMedicines()
+    {
+        return $this->hasMany(OrderMedicine::class)->onDelete('cascade');
+    }
 }
