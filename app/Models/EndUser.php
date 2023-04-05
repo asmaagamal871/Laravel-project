@@ -8,9 +8,10 @@ use Spatie\Permission\Traits\HasRoles;
 
 class EndUser extends User
 {
-    use HasFactory,HasRoles;
-    
+    use HasFactory, HasRoles;
+
     protected $table = 'end_users';
+    protected $guard_name = 'web';
 
     protected $fillable = [
         'DOB',
@@ -20,6 +21,10 @@ class EndUser extends User
     ];
     public function type()
     {
-        return $this->morphOne(User::class,'typeable');
+        return $this->morphOne(User::class, 'typeable');
+    }
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

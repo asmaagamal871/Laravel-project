@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Traits\HasRoles;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory,HasRoles ;
+    protected $table = 'orders';
+
     protected $fillable = [
         'is_insured',
         'delivery_address_id',
@@ -27,5 +30,13 @@ class Order extends Model
     public function pharmacy()
     {
         return $this->belongsTo(Pharmacy::class);
+    }
+    public function prescriptions()
+    {
+        return $this->hasMany(Prescription::class);
+    }
+    public function orderMedicines()
+    {
+        return $this->hasMany(OrderMedicine::class);
     }
 }

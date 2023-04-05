@@ -2,6 +2,13 @@
 
 return [
 
+    'permissions' => ['manage-own-addresses', 'manage-own-orders', 'update-own-user-info'],
+    'roles' => [
+        'end-user' => [
+            ['manage-own-addresses', 'manage-own-orders', 'update-own-user-info']
+        ],
+    ],
+
     'models' => [
 
         /*
