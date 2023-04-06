@@ -8,12 +8,12 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Order extends Model
 {
-    use HasFactory,HasRoles ;
+    use HasFactory, HasRoles;
     protected $table = 'orders';
 
     protected $fillable = [
         'is_insured',
-        'delivery_address_id',
+        'address_id',
         'visa',
         'user_id',
         'pharmacy_id',
@@ -30,6 +30,10 @@ class Order extends Model
     public function pharmacy()
     {
         return $this->belongsTo(Pharmacy::class);
+    }
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
     public function prescriptions()
     {

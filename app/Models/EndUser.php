@@ -25,6 +25,6 @@ class EndUser extends User
     }
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class)->onDelete('cascade');
     }
 }

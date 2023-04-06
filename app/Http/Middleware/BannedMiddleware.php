@@ -17,13 +17,17 @@ class BannedMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $user_email = $request->email;
-        $doctor = User::where('email', $user_email)->first()->typeable;
-        if (isset($doctor)) {
+        $user = User::where('email', $user_email)->first();
+        if ($user) {
+            $doctor = $user->typeable;
             if ($doctor && $doctor->is_banned) {
                 auth()->logout();
-                 return redirect()->route('login')->with('error', 'This account is banned.');
+                return redirect()->route('login')->with('error', 'This account is banned.');
             } else
-            return $next($request);
+                return $next($request);
+        }else{
+            return redirect()->route('login')->with('error', 'This account does not match our records.');
+
         }
     }
 }

@@ -25,9 +25,8 @@ return new class () extends Migration {
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-            $table->unsignedBigInteger('typeable_id')->nullable();
+            $table->unsignedBigInteger('typeable_id')->nullable()->onDelete('cascade');
             $table->string('typeable_type')->nullable();
-//            $table->enum("type",['doctor','pharmacy','admin','end_user']);
         });
     }
 

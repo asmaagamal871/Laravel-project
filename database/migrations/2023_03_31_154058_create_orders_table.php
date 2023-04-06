@@ -15,8 +15,8 @@ return new class () extends Migration {
             $table->timestamps();
             $table->enum('status', ['new','processing','waitingCustConfirmation','cancelled','confirmed','delivered']);
             $table->boolean('is_insured');
-            $table->unsignedBigInteger('delivery_address_id');
-            $table->foreign('delivery_address_id')->references('id')->on('addresses');
+            $table->unsignedBigInteger('address_id');
+            $table->foreign('address_id')->references('id')->on('addresses');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('end_users');
             $table->unsignedBigInteger('doctor_id')->nullable();
@@ -24,6 +24,7 @@ return new class () extends Migration {
             $table->unsignedBigInteger('pharmacy_id')->nullable();
             $table->foreign('pharmacy_id')->references('id')->on('pharmacies');
             $table->string('visa')->nullable();
+            $table->enum('creator_type',['user','admin']);
         });
     }
 
