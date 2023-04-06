@@ -23,6 +23,6 @@ class Medicine extends Model
  
     public function orderMedicines()
     {
-        return $this->hasMany(OrderMedicine::class)->onDelete('cascade');
+        return $this->hasMany(OrderMedicine::class);
     }
 }
