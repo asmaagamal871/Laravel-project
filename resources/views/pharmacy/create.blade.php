@@ -1,10 +1,6 @@
 @extends('layouts.app')
 
 
-@section('title')
-    Create Pharmacy
-@endsection
-
 @section('content')
 
 
@@ -34,6 +30,10 @@
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Area ID</label>
             <textarea name="area_id" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">National ID</label>
+            <textarea name="national_id" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
         </div>
 
 

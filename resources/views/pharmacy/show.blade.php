@@ -19,6 +19,10 @@
                 <p>{{$pharmacy->area_id}}</p>
                 <strong class="card-title">created_at: </strong>
                 <p>{{$pharmacy->created_at}}</p>
+                
+        
+        </div>
+
             </div>
         </div>
 
@@ -29,5 +33,50 @@
             <button type="submit" class="btn btn-danger">Delete</button>
         </form>
         <a href="{{ route('pharmacy.index') }}" class="btn btn-secondary float-right">Back</a>
+
+        <hr>
+                <h5>Doctors</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>National ID</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($doctors as $doctor)
+                        <tr>
+                            <td>{{ $doctor->id }}</td>
+                            <td>{{ $doctor->national_id }}</td>
+                            <td>{{ $doctor->isBanned() ? 'Banned' : 'Active' }}</td>
+                            <td>
+                                @if ($doctor->isBanned())
+                                    <form action="{{ route('pharmacy.doctors.unban', [$pharmacy, $doctor]) }}" method="POST" style="display: inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-success">Unban</button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('pharmacy.doctors.ban', [$pharmacy, $doctor]) }}" method="POST" style="display: inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="btn btn-danger">Ban</button>
+                                    </form>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4">No doctors found.</td>
+                        </tr>
+                    @endforelse
+                    
+                </tbody>
+            </table>
+    
     </div>
+
+   
 @endsection

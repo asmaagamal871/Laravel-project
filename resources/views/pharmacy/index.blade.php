@@ -32,14 +32,27 @@
             <td>{{$pharmacy->created_at}}</td>
             
             <td>
+                
+            @if($pharmacy->deleted_at)
+                <form action="{{ route('pharmacy.restore', $pharmacy->id) }}" method="post">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" class="btn btn-success">Restore</button>
+                </form>
+            @else
                 <a href="{{route('pharmacy.show', $pharmacy->id)}}" class="btn btn-info" style="color:white;">View</a>
-                <a href="{{route('pharmacy.edit', $pharmacy->id)}}" class="btn btn-primary">Edit</a>
+                @if(auth()->user()->isAdmin() || auth()->user()->id === $pharmacy->id)
+                                    <a href="{{ route('pharmacy.edit', $pharmacy->id) }}" class="btn btn-secondary btn-sm">Edit</a>
+                @endif
+                <!-- <a href="{{route('pharmacy.edit', $pharmacy->id)}}" class="btn btn-primary">Edit</a> -->
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" value="{{$pharmacy['id']}}">
                     Delete
                 </button>
+                @endif
             </td>
         </tr>
+        
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -61,11 +74,18 @@
                 </div>
             </div>
         </div>
+
+        
         @endforeach
 
+        
+
     </tbody>
+    
 
 </table>
+
+
     {{-- {{ $pharmacy->links() }} --}}
 
       

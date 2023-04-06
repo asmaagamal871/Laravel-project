@@ -12,7 +12,8 @@ use App\Notifications\MailNotification;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Notification;
+
+use App\Http\Controllers\PharmacyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,3 +105,21 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 // Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
 // Route::put('/users/{post}', [UserController::class, 'update'])->name('users.update');
 // Route::delete('/users/{id}', [UserController::class, 'delete'])->name('users.destroy');
+
+//PHARMACY
+//Route::middleware(['auth'])->group(function (){
+
+Route::resource('pharmacy', PharmacyController::class);
+Route::get('/pharmacy/create', [PharmacyController::class,'create'])->name('pharmacy.create');
+Route::get('/pharmacy/{pharmacy}', [PharmacyController::class,'show'])->name('pharmacy.show');
+Route::get('/', [PharmacyController::class,'index'])->name('pharmacy.index');
+Route::post('/pharmacy', [PharmacyController::class, 'store'])->name('pharmacy.store');
+Route::get('/pharmacy/{id}/edit', [PharmacyController::class, 'edit'])->name('pharmacy.edit');
+Route::put('/pharmacy/{post}', [PharmacyController::class, 'update'])->name('pharmacy.update');
+Route::delete('/pharmacy/{id}', [PharmacyController::class, 'destroy'])->name('pharmacy.destroy');
+Route::put('pharmacy/{id}/restore', [PharmacyController::class, 'restore'])->name('pharmacy.restore');
+
+Route::put('/pharmacy/{pharmacy}/doctors/{doctor}/ban', [PharmacyController::class, 'banDoctor'])->name('pharmacy.doctors.ban')->middleware('can:ban,doctor');
+Route::put('/pharmacy/{pharmacy}/doctors/{doctor}/unban', [PharmacyController::class, 'unbanDoctor'])->name('pharmacy.doctors.unban')->middleware('can:unban,doctor');
+
+//});
