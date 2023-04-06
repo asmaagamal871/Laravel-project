@@ -5,6 +5,7 @@ Create
 @endsection
 
 @section('content')
+
 @if ($errors->any())
 <br>
 <div class="alert alert-danger">
@@ -16,8 +17,12 @@ Create
 </div>
 @endif
 
-<form method="POST" action="{{route('orders.store')}}" style="margin: 40px;" enctype="multipart/form-data">
+<!-- if end user -->
+@cannot('manage-orders')
+@can('manage-own-orders')
+<form method="POST" action="{{route('orders.update',$order->id)}}" style="margin: 40px;" enctype="multipart/form-data">
     @csrf
+    @method('PUT')
 
     @if (session('error'))
     <div role="alert" class="fw-bold fs-5 mb-3 text-center text-danger">{{ session('error') }}</div>
@@ -25,7 +30,7 @@ Create
 
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Prescriptions</label>
-        <input name="Prescriptions[]" type="file" accept=".jpg,.jpeg" multiple="multiple" class="form-control" id="exampleFormControlInput1" />
+        <input name="Prescriptions[]" type="file" accept=".jpg,.png" multiple="multiple" class="form-control" id="exampleFormControlInput1" />
     </div>
     <div class="mb-3">
         <label class="form-label">Is your order insured?</label>
@@ -51,17 +56,27 @@ Create
         </select>
     </div>
 
-    @can('manage-orders') 
+    <button type="submit" class="btn btn-success">Update order</button>
+</form>
+@endcan
+@endcannot
+
+<!-- if doctor -->
+@hasanyrole('doctor|pharmacy')
+<form method="POST" action="{{route('orders.update',$order->id)}}" style="margin: 40px;" enctype="multipart/form-data">
+    @csrf
     <div class="mb-3">
         <label class="form-label">User</label>
-        <select name="user" class="form-control">
-            @foreach($all_users as $user)
-            <option value="{{$user->id}}">{{$user->type->name}}</option>
+        <select name="pharmacy_users" class="form-control">
+            @foreach($orders as $order)
+            <option value="{{$order->id}}">{{$order->user()->first()->type->name}}</option>
             @endforeach
         </select>
     </div>
-    @endcan
-
-    <button type="submit" class="btn btn-success">Submit order</button>
+    
+    <button type="submit" class="btn btn-success">Update order</button>
 </form>
+@endhasanyrole
+
+
 @endsection

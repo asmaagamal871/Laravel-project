@@ -28,4 +28,9 @@ class Address extends Model
     {
         return $this->belongsTo(Area::class);
     }
+    public function type()
+    {
+        return $this->morphOne(User::class,'typeable');
+    }
+   
 }

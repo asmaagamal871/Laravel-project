@@ -23,8 +23,14 @@ class EndUser extends User
     {
         return $this->morphOne(User::class, 'typeable');
     }
+    public function addresses()
+
+    {
+          return $this->hasMany(Address::class);
+    
+   }
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class)->onDelete('cascade');
     }
 }
