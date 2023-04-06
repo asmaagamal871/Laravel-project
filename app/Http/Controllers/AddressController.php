@@ -31,21 +31,7 @@ class AddressController extends Controller
     }
 
 
-    // if($alladdress){
-
-    //   return view('addresses.index', ['addresses' => $alladdress]);
-    // }
-    // else{
-    // if ($user->can('manage-addresses')) {
-    //   $alladdress = Address::all();
-    //   return view('addresses.index', ['addresses' => $alladdress]);
-    // }
-    // else{
-    //   abort(403, 'Unauthorized action.');
-    // }
-
-    //}
-    //   dd($alladdress);
+   
 
   }
 
