@@ -8,7 +8,14 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Area extends Model
 {
-    use HasFactory,HasRoles ;
+    use HasFactory,HasRoles;
+   
+    public function Address(){
+        return $this->hasMany(Address::class);
+    }
+
+
+   
     protected $table = 'areas';
 
 }
