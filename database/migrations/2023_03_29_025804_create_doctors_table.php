@@ -16,6 +16,8 @@ return new class () extends Migration {
             $table->string('national_id');
             $table->boolean('is_banned')->default(0);;
             $table->string('avatar')->default('public/doctors/default.png');//3dltha avtar bdl image
+            $table->boolean('is_banned')->default(0);
+            $table->string('image')->default('public/doctors/default.png');
             $table->rememberToken();
             $table->unsignedBigInteger('pharmacy_id')->nullable();
             $table->foreign('pharmacy_id')->references('id')->on('pharmacies');

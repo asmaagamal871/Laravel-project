@@ -5,13 +5,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\DoctorController;
+//use App\Http\Controllers\DoctorController;
 use App\Models\Doctor;
 use App\Http\Controllers\AreaController;
 use App\Mail\NotifyUserMail;
 use App\Models\Area;
 
 //need to use pharmacy controller
+
+use App\Http\Controllers\PharmacyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +26,57 @@ use App\Models\Area;
 |
 */
 
+// Route::get('/', function  () {
+// User::find(1)->notifiy(new MailNotification);
+// //$users=User::find(1);
+//    // Notification::send($users,new MailNotification());
+//     return view("welcome");
+
+// });
+
+
+
+//////////////////////////////////////////////////////medicines//////////////////////////////////////////
+Route::get('/medicines',[MedicineController::class,'index'])->name(('medicines.index'));
+
+Route::get('/medicines/create', [MedicineController::class, 'createMedicine'])->name('medicines.create');
+ Route::post('/medicines/store', [MedicineController::class, 'storeMedicine'])->name('medicines.store');
+ Route::get('/medicines/{medicine}/edit',[MedicineController::class,'editMedicine'])->name('medicines.edit');
+ Route::put('/medicines/{medicine}', [MedicineController::class, 'updateMedicine'])->name('medicines.update');
+ Route::delete('/medicines/{medicine}',[MedicineController::class,'destoryMedicine'])->name('medicines.destory');
+Route::get('/medicines/{medicine}', [MedicineController::class,'showMedicine'])->name('medicines.show');
+
+////////////////////////////////////////////////////stripe/////////////////////////////////////////////
+  
+ 
+/*Route::controller(StripePaymentController::class)->group(function(){
+    Route::get('stripe', 'stripe');
+    Route::post('stripe', 'stripePost')->name('stripe.post');
+});*/
+
+
+///////////////////////////////////////////////adresses////////////////////////////////////////////////////////
+Route::get('/addresses',[AddressController::class,'index'])->name(('addresses.index'));
+
+Route::get('/addresses/create', [AddressController::class, 'createAddress'])->name('addresses.create');
+ Route::post('/addresses/store', [AddressController::class, 'storeAddress'])->name('addresses.store');
+ Route::get('/addresses/{address}/edit',[AddressController::class,'editAddress'])->name('addresses.edit');
+ Route::put('/addresses/{address}', [AddressController::class, 'updateAddress'])->name('addresses.update');
+ Route::delete('/addresses/{address}',[AddressController::class,'destoryAddress'])->name('addresses.destory');
+Route::get('/addresses/{address}', [AddressController::class,'showAddress'])->name('addresses.show');
+//////////////////////////////////////////email////////////////////////////////
+
+//Route::get('/send_emails', [SendMailController::class, 'form'])->name('send_emails_form');
+//Route::post('/send_emails', [SendMailController::class, 'send_emails'])->name('send_emails');
+
+
+Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
@@ -79,3 +132,20 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 
 //Mail
 
+//PHARMACY
+//Route::middleware(['auth'])->group(function (){
+
+Route::resource('pharmacies', PharmacyController::class);
+Route::get('/pharmacies/create', [PharmacyController::class,'create'])->name('pharmacies.create');
+Route::get('/pharmacies/{pharmacy}', [PharmacyController::class,'show'])->name('pharmacies.show');
+Route::get('/pharmacies', [PharmacyController::class,'index'])->name('pharmacies.index');
+Route::post('/pharmacies', [PharmacyController::class, 'store'])->name('pharmacies.store');
+Route::get('/pharmacies/{id}/edit', [PharmacyController::class, 'edit'])->name('pharmacies.edit');
+Route::put('/pharmacies/{post}', [PharmacyController::class, 'update'])->name('pharmacies.update');
+Route::delete('/pharmacies/{id}', [PharmacyController::class, 'destroy'])->name('pharmacies.destroy');
+Route::put('pharmacies/{id}/restore', [PharmacyController::class, 'restore'])->name('pharmacies.restore');
+
+Route::put('/pharmacies/{pharmacy}/doctors/{doctor}/ban', [PharmacyController::class, 'ban'])->name('pharmacies.doctors.ban')->middleware('can:ban,doctor');
+Route::put('/pharmacies/{pharmacy}/doctors/{doctor}/unban', [PharmacyController::class, 'unban'])->name('pharmacies.doctors.unban')->middleware('can:unban,doctor');
+
+//});
