@@ -49,10 +49,10 @@ Route::get('/medicines/{medicine}', [MedicineController::class,'showMedicine'])-
 ////////////////////////////////////////////////////stripe/////////////////////////////////////////////
   
  
-Route::controller(StripePaymentController::class)->group(function(){
+/*Route::controller(StripePaymentController::class)->group(function(){
     Route::get('stripe', 'stripe');
     Route::post('stripe', 'stripePost')->name('stripe.post');
-});
+});*/
 
 
 ///////////////////////////////////////////////adresses////////////////////////////////////////////////////////
@@ -66,8 +66,8 @@ Route::get('/addresses/create', [AddressController::class, 'createAddress'])->na
 Route::get('/addresses/{address}', [AddressController::class,'showAddress'])->name('addresses.show');
 //////////////////////////////////////////email////////////////////////////////
 
-Route::get('/send_emails', [SendMailController::class, 'form'])->name('send_emails_form');
-Route::post('/send_emails', [SendMailController::class, 'send_emails'])->name('send_emails');
+//Route::get('/send_emails', [SendMailController::class, 'form'])->name('send_emails_form');
+//Route::post('/send_emails', [SendMailController::class, 'send_emails'])->name('send_emails');
 
 
 Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
@@ -109,17 +109,17 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 //PHARMACY
 //Route::middleware(['auth'])->group(function (){
 
-Route::resource('pharmacy', PharmacyController::class);
-Route::get('/pharmacy/create', [PharmacyController::class,'create'])->name('pharmacy.create');
-Route::get('/pharmacy/{pharmacy}', [PharmacyController::class,'show'])->name('pharmacy.show');
-Route::get('/', [PharmacyController::class,'index'])->name('pharmacy.index');
-Route::post('/pharmacy', [PharmacyController::class, 'store'])->name('pharmacy.store');
-Route::get('/pharmacy/{id}/edit', [PharmacyController::class, 'edit'])->name('pharmacy.edit');
-Route::put('/pharmacy/{post}', [PharmacyController::class, 'update'])->name('pharmacy.update');
-Route::delete('/pharmacy/{id}', [PharmacyController::class, 'destroy'])->name('pharmacy.destroy');
-Route::put('pharmacy/{id}/restore', [PharmacyController::class, 'restore'])->name('pharmacy.restore');
+Route::resource('pharmacies', PharmacyController::class);
+Route::get('/pharmacies/create', [PharmacyController::class,'create'])->name('pharmacies.create');
+Route::get('/pharmacies/{pharmacy}', [PharmacyController::class,'show'])->name('pharmacies.show');
+Route::get('/pharmacies', [PharmacyController::class,'index'])->name('pharmacies.index');
+Route::post('/pharmacies', [PharmacyController::class, 'store'])->name('pharmacies.store');
+Route::get('/pharmacies/{id}/edit', [PharmacyController::class, 'edit'])->name('pharmacies.edit');
+Route::put('/pharmacies/{post}', [PharmacyController::class, 'update'])->name('pharmacies.update');
+Route::delete('/pharmacies/{id}', [PharmacyController::class, 'destroy'])->name('pharmacies.destroy');
+Route::put('pharmacies/{id}/restore', [PharmacyController::class, 'restore'])->name('pharmacies.restore');
 
-Route::put('/pharmacy/{pharmacy}/doctors/{doctor}/ban', [PharmacyController::class, 'banDoctor'])->name('pharmacy.doctors.ban')->middleware('can:ban,doctor');
-Route::put('/pharmacy/{pharmacy}/doctors/{doctor}/unban', [PharmacyController::class, 'unbanDoctor'])->name('pharmacy.doctors.unban')->middleware('can:unban,doctor');
+Route::put('/pharmacies/{pharmacy}/doctors/{doctor}/ban', [PharmacyController::class, 'ban'])->name('pharmacies.doctors.ban')->middleware('can:ban,doctor');
+Route::put('/pharmacies/{pharmacy}/doctors/{doctor}/unban', [PharmacyController::class, 'unban'])->name('pharmacies.doctors.unban')->middleware('can:unban,doctor');
 
 //});

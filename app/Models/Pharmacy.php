@@ -11,11 +11,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 
-class Pharmacy extends Model
+class Pharmacy extends Model implements BannableContract
 {
     use HasFactory,HasRoles,SoftDeletes,Bannable;
     
     protected $table = 'pharmacies';
+
+    protected $guard_name ='web';
 
     protected $fillable = [
         
@@ -51,6 +53,13 @@ class Pharmacy extends Model
         return $this->hasMany(Doctor::class);
     }
 
+    public function getAvatarPathAttribute()
+{
+    return $this->avatar ? asset('storage/' . $this->avatar) : asset('img/default-avatar.png');
+}
+
+
+
     /*public function banDoctor(Doctor $doctor)
     {
         if ($this->doctors->contains($doctor)) {
@@ -64,5 +73,14 @@ class Pharmacy extends Model
         if ($this->bans->contains('model_id', $doctor->getKey())) {
             $this->unban($doctor);
         }
+    }*/
+    /*public function banDoctor(Doctor $doctor, $comment = null, $expiredAt = null)
+    {
+        $this->ban($doctor, $comment, $expiredAt);
+    }
+
+    public function unbanDoctor(Doctor $doctor)
+    {
+        $this->unban($doctor);
     }*/
 }
