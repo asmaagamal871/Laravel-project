@@ -39,6 +39,10 @@ Update
         <input name="national_id" type="text" value="{{$doctor->national_id}}" class="form-control" id="exampleFormControlInput1">
     </div>
 
+    <div class="col-md-6">
+        <input class="form-control" type="file" id="formFile" accept=".jpg,.jpeg" name="avatar" />
+    </div>
+
     <button class="btn btn-success">Update</button>
 </form>
 

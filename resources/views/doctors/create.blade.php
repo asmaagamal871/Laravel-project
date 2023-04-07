@@ -38,6 +38,11 @@
             <textarea name="national_id" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
         </div>
 
+        <div class="col-md-6">
+            <input class="form-control" type="file" id="formFile" accept=".jpg,.jpeg" name="avatar" />
+        </div>
+    
+
         @can('manage-doctors')
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">pharmacies</label>

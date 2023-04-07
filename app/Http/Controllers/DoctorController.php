@@ -138,6 +138,7 @@ class DoctorController extends Controller
 
 
 
+
             $doctor = Doctor::where('id', $id)->first();
             // dd($doctors);
             return view('doctors.show', ['doctors' => $doctor]);
@@ -184,6 +185,7 @@ class DoctorController extends Controller
          $doctor->type->name = $request->name;
         $doctor->type->email = $request->email;
          $doctor->type->password = $request['password'];
+         $doctor->avatar = $request['avatar'];
          $doctor->save();
 
 
@@ -237,6 +239,16 @@ else {
 
     abort(403, 'Unauthorized action.');
 }}
+
+
+
+
+// public function getAvatarPathAttribute()
+// {
+//     return $this->avatar ? asset('storage/' . $this->avatar) : asset('img/default-avatar.png');
+// }
+
+
 }
 
 

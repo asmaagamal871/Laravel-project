@@ -9,10 +9,12 @@
 <table class="table mt-4">
     <thead>
         <tr>
+            <th scope="col">avatar</th>
             <th scope="col">id</th>
             <th scope="col">Name</th>
             <th scope="col">Created At</th>
             <th scope="col">Actions</th>
+            
         </tr>
         
     </thead>
@@ -21,6 +23,8 @@
         @foreach($doctors as $doctor)
         
         <tr>
+            <td>
+                <img src="{{ $doctor->avatar_path }}" alt="{{ $doctor->type->name }}'s Avatar" width="50">></td>
             <td>{{$doctor->id}}</td>
             
             
@@ -32,6 +36,7 @@
 
             
             <td>{{$doctor->created_at}}</td>
+            
             
             <td>
                 <a href="{{route('doctors.show', $doctor->id)}}" class="btn btn-info" style="color:white;">View</a>

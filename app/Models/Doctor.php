@@ -40,6 +40,11 @@ class Doctor extends User
     public function pharmacy(){
         return $this->belongsTo(Pharmacy::class);
     }
+    public function getAvatarPathAttribute()
+{
+    return $this->avatar ? asset('storage/' . $this->avatar) : asset('img/default-avatar.png');
+}
+
 
 
 

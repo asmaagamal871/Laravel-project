@@ -13,6 +13,10 @@
     <p>{{$doctors->type->name}}</p>
     <strong class="card-title">created at: </strong>
     <p>{{$doctors->created_at}}</p>
+
+    <strong class="card-title">Avatar: </strong>
+    <p>{{$doctors->avatar}}</p>
+
   </div>
 </div>
 
