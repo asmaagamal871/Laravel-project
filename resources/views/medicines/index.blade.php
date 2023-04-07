@@ -22,8 +22,7 @@
                 <td>{{ $medicine->type}}</a></td>
                 <td>{{ $medicine->price}}</a></td>
               
-           
-            </tr>
+         
        
         <td>
                 <a href="{{route('medicines.edit',$medicine['id'])}}" class="btn btn-primary">Edit</a>

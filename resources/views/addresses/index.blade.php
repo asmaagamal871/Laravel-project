@@ -28,8 +28,7 @@
                 <td>{{$address->is_main}}</td>
                 <td>{{ $address->end_user->type->name}}</a></td>
                 <td>{{ $address->area->name}}</a></td>
-           
-            </tr>
+         
        
         <td>
                 <a href="{{route('addresses.edit',$address['id'])}}" class="btn btn-primary">Edit</a>
