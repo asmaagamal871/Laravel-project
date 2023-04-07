@@ -5,18 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Doctor extends User
 {
-    use HasFactory,HasRoles;
+
+
+    
+    protected $guard_name = 'web';
     
      protected $table = 'doctors';
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+        
+        'national_id',
+        'avatar', 
+        'is_baned',
+        'created_at'
+
+       ];
+    
 
     protected $hidden = [
         'password',
@@ -25,10 +34,16 @@ class Doctor extends User
 
     public function type()
     {
-        return $this->morphOne(User::class,'typeable');
+        return $this->morphOne(User::class, 'typeable');
     }
-    public function pharmacy()
-    {
+
+    public function pharmacy(){
         return $this->belongsTo(Pharmacy::class);
     }
+
+
+
+
+
 }
+
