@@ -21,10 +21,32 @@ class StoreOrderRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'address' => ['required', 'exists:addresses,id'],
-            'radio' => ['required'],
-            'Prescriptions' => ['required']
-        ];
+        if (auth()->user()->hasRole('admin')) {
+            return [
+                'address' => ['required', 'exists:addresses,id'],
+                'radio' => ['required'],
+                'Prescriptions' => ['required'],
+            ];
+        }
+        if (auth()->user()->hasRole('end-user')) {
+            return [
+                'address' => ['required', 'exists:addresses,id'],
+                'radio' => ['required'],
+                'Prescriptions' => ['required'],
+            ];
+        }
+        if (auth()->user()->hasRole('pharmacy')) {
+            return [
+                'order_id' => ['required', 'exists:orders,id'],
+                'quantity' => ['required'],
+                'meds' => ['required'],
+            ];
+        }
+        if (auth()->user()->hasRole('admin')) {
+            return [
+                'status' => ['required'],
+
+            ];
+        }
     }
 }

@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\EndUser;
+use App\Models\Medicine;
 use Illuminate\Support\Facades\Gate;
+use PhpParser\Node\Stmt\Foreach_;
 
 class OrderController extends Controller
 {
@@ -22,14 +24,17 @@ class OrderController extends Controller
 
         if ($user->can('manage-orders')) { //admin
             $allOrders = Order::all(); //select * from posts
+            return view('order.index', ['orders' => $allOrders]);
         } else if ($user->can('manage-own-orders')) { //user
             $allOrders = Order::where('user_id', $user->typeable->id)->get();
+            return view('order.index', ['orders' => $allOrders]);
         } else if ($user->can('view-orders')) { //pharmacy
-            $allOrders = Order::where('pharmacy_id', $user->typeable->id)->get();
+            $allOrders = Order::where('pharmacy_id', $user->typeable->id)->whereNotIn('status', ['processing'])->get();
+            return view('order.index', ['orders' => $allOrders]);
         } else if ($user->can('update-order-status')) { //doctor
             $allOrders = Order::where('pharmacy_id', $user->typeable->pharmacy_id)->get();
+            return view('order.index', ['orders' => $allOrders]);
         };
-        return view('order.index', ['orders' => $allOrders]);
     }
 
     public  function show($id)
@@ -42,24 +47,28 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->can('manage-orders')) { //if admin
-
+        if ($user->hasRole('admin')) { //if admin
             $addresses = Address::all();
             $allUsers = EndUser::all();
-
             return view('order.create', ['addresses' => $addresses, 'all_users' => $allUsers]);
-        } else if ($user->can('manage-own-orders')) { //if end user
-
+        } else if ($user->hasRole('end-user')) { //if end user
             $addresses = Address::where('end_user_id', $user->typeable->id)->get();
-
             return view('order.create', ['addresses' => $addresses]);
+        } else if ($user->hasRole('pharmacy')) {
+            $medicines = Medicine::all();
+            $new_orders = Order::where('pharmacy_id', $user->typeable->id)->where('status', 'processing')->get();
+            if ($new_orders->first()) {
+                return view('order.create', ['new_orders' => $new_orders, 'medicines' => $medicines]);
+            } else
+                return redirect()->route('orders.index')->with(
+                    'error',
+                    'No new orders available.'
+                );
         }
     }
 
-    public  function store(StoreOrderRequest $request)
+    public  function store()
     {
-        $valid_request = $request->validated();
-
         $user = Auth::user();
 
         $order = new Order();
@@ -68,6 +77,7 @@ class OrderController extends Controller
         $order->address_id = request()->address;
 
         if ($user->can('manage-own-orders')) { //admin or user
+            // $valid_request = $request->validated();
             if ($user->can('manage-orders')) { //if admin
                 $end_user = EndUser::find(request()->user);
                 $address = Address::find(request()->address);
@@ -87,8 +97,7 @@ class OrderController extends Controller
                 $order->user()->associate($user);
                 $order->save();
             }
-
-            $Prescriptions = $request->file("Prescriptions");
+            $Prescriptions = request()->file("Prescriptions");
             foreach ($Prescriptions as $Prescription) {
                 $paths[] = Storage::putFileAs(
                     'public/prescriptions',
@@ -104,6 +113,40 @@ class OrderController extends Controller
             }
 
             return to_route('orders.index');
+        } else if ($user->hasRole('pharmacy')) {
+            $total_price = 0.0;
+            $medicines = request()->input('meds'); //array of medicine id's
+            // dd($medicines);
+            $quantity = request()->input('quantity');
+            $order = Order::find(request()->order);
+            $i = 0;
+            if (in_array(null, $quantity, true)) {
+                return redirect()->route('orders.edit', ['order' => $order])->with(
+                    'error',
+                    'Missing quantities for new medicines selected.'
+                );
+            } else {
+                foreach ($medicines as $medicine) {
+                    $medicine_in_table = Medicine::find($medicine);
+                    if ($medicine_in_table) {
+                        OrderMedicine::create([
+                            'order_id' => request()->order,
+                            'medicine_id' => $medicine,
+                            'qty' => $quantity[$i]
+                        ]);
+                    }
+                    $i = $i + 1;
+                }
+            }
+
+            $orderMedicines = $order->orderMedicines()->get();
+            foreach ($orderMedicines as $record) {
+                $total_price = $total_price + ($record->qty * $record->medicine()->first()->price);
+            }
+            $order->total_price = $total_price;
+            $order->status = 'waitingCustConfirmation';
+            $order->save();
+            return to_route('orders.index');
         } else {
             abort(403, 'Unauthorized request.');
         }
@@ -113,71 +156,140 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->can('manage-orders')) { //if admin
+        if ($user->hasRole('admin')) { //if admin
 
             $addresses = Address::all();
             $allUsers = EndUser::all();
-            return view('order.edit', ['addresses' => $addresses, 'all_users' => $allUsers]);
-        } else if ($user->can('manage-own-orders')) { //if end user
+            $order = Order::find($id);
+            $medicines = Medicine::all();
+
+            return view('order.edit', ['addresses' => $addresses, 'all_users' => $allUsers,'order'=>$order,'medicines'=>$medicines]);
+        } else if ($user->hasRole('end-user')) { //if end user
             $order = Order::find($id);
             $addresses = Address::where('end_user_id', $user->typeable->id)->get();
-            return view('order.edit', ['addresses' => $addresses, 'order' => $order]);
-        } else if ($user->can('update-order-status')) { //if doctor
-            $doctor = $user->typeable;
-            $pharmacy = $doctor->pharmacy()->first();
-            $orders = $pharmacy->orders()->get();
-            return view('order.edit', ['orders' => $orders]);
-        } else if ($user->can('edit-orders')) { //if pharmacy
-            $pharmacy = $user->typeable;
+            if ($order->status == 'new')
+                return view('order.edit', ['addresses' => $addresses, 'order' => $order]);
+            else {
+                return redirect()->route('orders.index')->with(
+                    'error',
+                    'Sorry, order is already assigned to a pharmacy.'
+                );
+            }
+        } else if ($user->hasRole('doctor')) { //if doctor
+            $order = Order::find($id);
+            if ($order->status == 'processing')
+                return redirect()->route('orders.index')->with(
+                    'error',
+                    'The order has not been fulfilled yet.'
+                );
+            elseif ($order->status == 'delivered')
+                return redirect()->route('orders.index')->with(
+                    'error',
+                    'The order has been delivered.'
+                );
+            else
+                return view('order.edit', ['order' => $order]);
+        } else if ($user->hasRole('pharmacy')) { //if pharmacy
+            $order = Order::find($id);
+            if ($order->status != 'waitingCustConfirmation')
+                return redirect()->route('orders.index')->with(
+                    'error',
+                    'This order is already ' . $order->status . '.'
+                );
+            else {
+                $medicines = Medicine::all();
+                return view('order.edit', ['medicines' => $medicines, 'order' => $order]);
+            }
         }
     }
 
     public  function update($id)
     {
+
         $user = Auth::user();
         $order = Order::find($id);
-        if ($user->cannot('manage-orders')) { // if not admin
-            if ($user->can('manage-own-orders')) { //if end user
-                if ($order->status == 'new') { //users are only allowed to edit new orders
-                    $order->update([
-                        'is_insured' => request()->radio,
-                        'address_id' => request()->address
-                    ]);
+        if ($user->hasRole('end-user')) { //if end user
+            $order->update([
+                'is_insured' => request()->radio,
+                'address_id' => request()->address
+            ]);
 
-                    $prescriptions = request()->file("Prescriptions");
-                    if ($prescriptions) {
-                        $old_prescriptions = $order->prescriptions()->get(); //get all prescriptions of this order
-                        foreach ($old_prescriptions as $prescription) {
-                            if (Storage::exists($prescription->prescription)) { 
-                                Storage::delete($prescription->prescription); //delete from storage
-                                 //delete record
-                            }
-                            $prescription->delete(); //delete all old prescriptions to add new ones
-                        }
-                        foreach ($prescriptions as $Prescription) { //save new ones in storage
-                            $paths[] = Storage::putFileAs(
-                                'public/prescriptions',
-                                $Prescription,
-                                $Prescription->getClientOriginalName()
-                            );
-                        }
-                        foreach ($paths as $path) {  //create new instances
-                            Prescription::create([
-                                'order_id' => $id,
-                                'prescription' => $path
-                            ]);
-                        }
+            $prescriptions = request()->file("Prescriptions");
+            if ($prescriptions) {
+                $old_prescriptions = $order->prescriptions()->get(); //get all prescriptions of this order
+                foreach ($old_prescriptions as $prescription) {
+                    if (Storage::exists($prescription->prescription)) {
+                        Storage::delete($prescription->prescription); //delete from storage
+                        //delete record
                     }
-                } else {
-                    return redirect()->route('orders.index')->with(
-                        'error',
-                        'Sorry, order is already assigned to a pharmacy.'
+                    $prescription->delete(); //delete all old prescriptions to add new ones
+                }
+                foreach ($prescriptions as $Prescription) { //save new ones in storage
+                    $paths[] = Storage::putFileAs(
+                        'public/prescriptions',
+                        $Prescription,
+                        $Prescription->getClientOriginalName()
                     );
                 }
-                return to_route('orders.index');
+                foreach ($paths as $path) {  //create new instances
+                    Prescription::create([
+                        'order_id' => $id,
+                        'prescription' => $path
+                    ]);
+                }
             }
+
+            return to_route('orders.index');
         }
-        if ($user->hasRole('doctor')) {
+        if ($user->hasRole('pharmacy')) { //if pharmacy
+
+            $medicines = request()->input('meds'); //array of medicine id's
+            $quantity = request()->input('quantity');
+            $order = Order::find(request()->order); //get order to be modified
+            $total_price = 0.0; //reset total price
+            $i = 0;
+            if ($medicines) { //if user updated medicines
+                if (in_array(null, $quantity, true)) {
+                    return redirect()->route('orders.edit', ['order' => $order])->with(
+                        'error',
+                        'Missing quantities for new medicines selected.'
+                    );
+                } else {
+                    $old_orderMedicines = $order->orderMedicines()->get(); //get previous records of medicines
+                    foreach ($old_orderMedicines as $old_orderMedicine) { //delete old records
+                        $old_orderMedicine->delete();
+                    }
+                    foreach ($medicines as $medicine) { //create new records
+                        $medicine_in_table = Medicine::find($medicine); //if this is a saved medicine
+                        if ($medicine_in_table) { //create order record
+                            OrderMedicine::create([
+                                'order_id' => $id,
+                                'medicine_id' => $medicine,
+                                'qty' => $quantity[$i]
+                            ]);
+                        }
+                        $i = $i + 1;
+                    }
+                }
+
+                $orderMedicines = $order->orderMedicines()->get();
+                foreach ($orderMedicines as $record) { //update total price
+                    $total_price = $total_price + ($record->qty * $record->medicine()->first()->price);
+                }
+                $order->total_price = $total_price;
+                $order->status = 'waitingCustConfirmation';
+                $order->save();
+            }
+
+            return to_route('orders.index');
+        }
+        if ($user->hasRole('doctor')) { //if doctor
+            $order = Order::find($id);
+            if (request()->status) {
+                $order->status = request()->status;
+                $order->save();
+            }
+            return to_route('orders.index');
         }
     }
 

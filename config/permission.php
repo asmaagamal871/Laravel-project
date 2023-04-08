@@ -2,12 +2,65 @@
 
 return [
 
-    'permissions' => ['manage-own-addresses', 'manage-own-orders', 'update-own-user-info'],
     'roles' => [
-        'end-user' => [
-            ['manage-own-addresses', 'manage-own-orders', 'update-own-user-info']
+        'end-user' => 'end-user',
+        'admin' => 'admin',
+        'doctor' => 'doctor',
+        'pharmacy' => 'pharmacy'
+    ],
+
+    'permissions' => [
+        'manage-pharmacies' => [
+            'admin',
+        ],
+        'manage-doctors' => [
+            'admin',
+        ],
+        'manage-orders' => [
+            'admin',
+        ],
+        'manage-end-users' => [
+            'admin',
+        ],
+        'manage-areas' => [
+            'admin',
+        ],
+        'manage-addresses' => [
+            'admin',
+        ],
+        'manage-medicines' => [
+            'admin',
+        ],
+        'manage-own-addresses' => [
+            'end-user',
+        ],
+        'manage-own-orders' => [
+            'end-user',
+        ],
+        'update-own-user-info' => [
+            'end-user',
+        ],
+        'manage-own-doctors' => [
+            'pharmacy',
+        ],
+        'update-own-pharmacy' => [
+            'pharmacy',
+        ],
+        'update-order-status' => [
+            'doctor',
+        ],
+        'view-orders' => [
+            'pharmacy',
+        ],
+        'edit-orders' => [
+            'pharmacy',
+        ],
+        'delete-orders' => [
+            'end-user',
+            'pharmacy'
         ],
     ],
+
 
     'models' => [
 

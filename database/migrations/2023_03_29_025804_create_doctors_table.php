@@ -14,7 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->timestamps();
             $table->string('national_id');
-            $table->boolean('is_banned')->default(0);;
+            $table->boolean('is_banned')->default(0);
             $table->string('image')->default('public/doctors/default.png');
             $table->rememberToken();
             $table->unsignedBigInteger('pharmacy_id')->nullable();

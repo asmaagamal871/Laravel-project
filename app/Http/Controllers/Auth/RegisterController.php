@@ -87,9 +87,7 @@ class RegisterController extends Controller
             ]
         );
 
-        $newUser->assignRole('end-user');
-        $newUser->givePermissionTo(['manage-own-addresses', 'manage-own-orders', 'update-own-user-info']);
-
+      
         $mainUser = User::factory()->create(
             [
                 'name' => $data['name'],
@@ -99,6 +97,8 @@ class RegisterController extends Controller
                 'typeable_id' => $newUser->id
             ]
         );
+        
+        $mainUser->assignRole('end-user');
       
         $newUser->type()->save($mainUser);
         return $mainUser;
