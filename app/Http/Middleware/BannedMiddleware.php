@@ -20,7 +20,7 @@ class BannedMiddleware
         $user = User::where('email', $user_email)->first();
         if ($user) {
             $doctor = $user->typeable;
-            if ($doctor && $doctor->is_banned) {
+            if ($doctor && $doctor->isBanned()) {
                 auth()->logout();
                 return redirect()->route('login')->with('error', 'This account is banned.');
             } else

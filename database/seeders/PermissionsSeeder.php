@@ -48,7 +48,7 @@ class PermissionsSeeder extends Seeder
         $doctor_role->givePermissionTo('update-order-status');
 
         $user_role = Role::create(['name' => 'end-user']);
-        $user_role->givePermissionTo(['manage-own-addresses', 'manage-own-orders', 'update-own-user-info','delete-orders']);
+        $user_role->givePermissionTo(['manage-own-addresses', 'manage-own-orders', 'update-own-user-info']);
 
         $pharmacy_role = Role::create(['name' => 'pharmacy']);
         $pharmacy_role->givePermissionTo(['manage-own-doctors', 'update-own-pharmacy', 'view-orders', 'edit-orders', 'delete-orders']);

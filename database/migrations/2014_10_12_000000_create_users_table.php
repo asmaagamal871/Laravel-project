@@ -5,15 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
-    /**
-     * Run the migrations.
-     */
-
-    //use App\User;
-    //User::create(['name' => 'Admin', 'email' => 'admin@example.com', 'password' => bcrypt('password'), 'is_admin' => 1]);
-    //Add UserSeeder::class to DatabaseSeeder.php
-    //php artisan migrate --seed
-    //php artisan migrate:refresh --seed
+    
 
     public function up(): void
     {
