@@ -25,6 +25,7 @@ return new class () extends Migration {
             $table->foreign('pharmacy_id')->references('id')->on('pharmacies');
             $table->string('visa')->nullable();
             $table->enum('creator_type',['user','admin']);
+            $table->float('total_price')->default(0);
         });
     }
 

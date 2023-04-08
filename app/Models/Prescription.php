@@ -8,7 +8,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Prescription extends Model
 {
-    use HasFactory,HasRoles ;
+    use HasFactory;
     protected $table = 'prescriptions';
 
     protected $fillable = [

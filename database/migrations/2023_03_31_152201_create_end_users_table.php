@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('DOB');
             $table->string('mob_num');
             $table->string('image')->default('public/doctors/default.png');
+            $table->string('national_id');
             
         });
     }

@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('title')
-Clients
+    Clients
 @endsection
 @section('breadcrumb')
-All Users
+    All Users
 @endsection
 @section('content')
     <div class="container">
@@ -16,6 +16,7 @@ All Users
                 {{ $dataTable->table() }}
             </div>
         </div>
+        <br>
     </div>
 @endsection
 

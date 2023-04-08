@@ -27,8 +27,8 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        // $order = Order::find(1);
-        // $user = User::find(5);
+        $order = Order::find(1);
+        $user = User::find(5);
         // dispatch(new OrderConfirmationJob($user, $order));
 
         return view('order.show', ['order' => $order]);

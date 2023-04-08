@@ -19,9 +19,7 @@ return new class () extends Migration {
             $table->rememberToken();
             $table->unsignedBigInteger('pharmacy_id')->nullable();
             $table->foreign('pharmacy_id')->references('id')->on('pharmacies');
-            // $table->unsignedBigInteger('user_id')->nullable();
-            // $table->foreign('user_id')->references('id')->on('users');
-
+           
         });
     }
 

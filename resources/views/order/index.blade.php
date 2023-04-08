@@ -1,41 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-        <div class="container">
-            @if ($errors->any())
-                <br>
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+    <div class="container">
+        @if ($errors->any())
+            <br>
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <div style="margin: 40px;">
+            @can('manage-own-orders')
+                <div class="text-center">
+                    <a href="{{ route('orders.create') }}" class="mt-4 btn btn-success">Create order</a>
                 </div>
-            @endif
-            <div style="margin: 40px;">
-                @can('manage-own-orders')
-                    <div class="text-center">
-                        <a href="{{ route('orders.create') }}" class="mt-4 btn btn-success">Create order</a>
-                    </div>
-                @endcan
-                <div class="card">
-                    <div class="card-header">Manage Orders</div>
-                    <div class="card-body">
-                        @if($dataTable->table())
+            @endcan
+            <div class="card">
+                <div class="card-header">Manage Orders</div>
+                <div class="card-body">
+                    @if ($dataTable->table())
                         {{ $dataTable->table() }}
-                        @else
-                        <label class="danger"> {{$error}} </label>
-                       @endif
-                    </div>
+                    @else
+                        <label class="danger"> {{ $error }} </label>
+                    @endif
                 </div>
             </div>
-        @endsection
+            <br>
+        </div>
+    @endsection
 
-        @push('scripts')
-            {{ $dataTable->scripts() }}
-        @endpush
+    @push('scripts')
+        {{ $dataTable->scripts() }}
+    @endpush
 
-{{-- @section('content')
+    {{-- @section('content')
     @if ($errors->any())
         <br>
         <div class="alert alert-danger">
@@ -56,7 +57,7 @@
 
     {{--  --}}
 
-{{-- 
+    {{-- 
         <table class="table mt-4">
             <thead>
                 <tr>
@@ -79,7 +80,7 @@
                         <td>{{ $order->status }}</td>
                         <td>{{ date('Y-m-d', strtotime($order->created_at)) }}</td>
                         <td> --}}
-                            {{-- <a href="{{route('orders.show', $order->id)}}" class="btn btn-info" style="color:white;">View</a>
+    {{-- <a href="{{route('orders.show', $order->id)}}" class="btn btn-info" style="color:white;">View</a>
                 @canany(['manage-orders', 'manage-own-orders', 'update-order-status'])
                 <a href="{{route('orders.edit', $order->id)}}" class="btn btn-primary">Edit</a>
                 @endcanany
@@ -89,9 +90,9 @@
                     Delete
                 </button>
                 @endcanany --}}
-                        {{-- </td> --}}
-                    {{-- </tr> --}}
-                    {{-- <div class="modal fade" id="exampleModal{{$order['id']}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    {{-- </td> --}}
+    {{-- </tr> --}}
+    {{-- <div class="modal fade" id="exampleModal{{$order['id']}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -112,10 +113,10 @@
                 </div>
             </div>
         </div> --}}
-                {{-- @endforeach --}}
+    {{-- @endforeach --}}
 
-            {{-- </tbody>
+    {{-- </tbody>
 
         </table>
-    </div>--}}
-{{-- @endsection  --}}
+    </div> --}}
+    {{-- @endsection  --}}

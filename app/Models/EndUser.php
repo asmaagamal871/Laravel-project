@@ -17,7 +17,8 @@ class EndUser extends User
         'DOB',
         'gender',
         'mobile_no',
-        'avatar'
+        'image',
+        'national_id',
     ];
     public function type()
     {

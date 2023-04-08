@@ -54,7 +54,7 @@ class UserController extends Controller
                 'typeable_id' => $newUser->id
             ]
         );
-        
+
         $newUser->assignRole('end-user');
         $newUser->givePermissionTo(['manage-own-addresses', 'manage-own-orders', 'update-own-user-info','delete-orders']);
 
@@ -83,7 +83,6 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-    
         $endUser = EndUser::find($id);
         $user=User::find($endUser->type->id);
 
@@ -134,9 +133,6 @@ class UserController extends Controller
         if ($endUser->image && Storage::exists($endUser->image)) {
             Storage::delete($endUser->image);
         }
-
-
-
         $endUser->delete();
         $user->delete();
         return redirect()->route('users.index');

@@ -197,6 +197,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
+        Cog\Laravel\Ban\Providers\BanServiceProvider::class,
 
     ],
 
@@ -215,6 +216,7 @@ return [
         'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'Ban' => Cog\Laravel\Ban\Facades\Ban::class,
     ])->toArray(),
     'Permission' => Spatie\Permission\Facades\Permission::class,
     'Role' => Spatie\Permission\Facades\Role::class,

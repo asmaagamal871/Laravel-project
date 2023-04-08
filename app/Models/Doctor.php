@@ -2,21 +2,32 @@
 
 namespace App\Models;
 
+use Cog\Contracts\Ban\Bannable as BannableContract;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Cog\Contracts\Ban\Bannable as BannableInterface;
+use Cog\Laravel\Ban\Traits\Bannable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Doctor extends User
+
+class Doctor extends user implements BannableInterface
 {
+    use Bannable;
     use HasFactory,HasRoles;
     
      protected $table = 'doctors';
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+        
+        'national_id',
+        'image', 
+        'is_baned',
+        'pharmacy_id',
+
+       ];
+    
 
     protected $hidden = [
         'password',
@@ -25,10 +36,21 @@ class Doctor extends User
 
     public function type()
     {
-        return $this->morphOne(User::class,'typeable');
+        return $this->morphOne(User::class, 'typeable');
     }
-    public function pharmacy()
-    {
+
+    public function pharmacy(){
         return $this->belongsTo(Pharmacy::class);
     }
+    public function getAvatarPathAttribute()
+{
+    return $this->avatar ? asset('storage/' . $this->avatar) : asset('img/default-avatar.png');
 }
+
+
+
+
+
+
+}
+

@@ -18,8 +18,6 @@ return new class () extends Migration {
             $table->unsignedBigInteger('area_id')->nullable();
             $table->foreign('area_id')->references('id')->on('areas');
             $table->integer('priority');
-            // $table->unsignedBigInteger('user_id');
-            // $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

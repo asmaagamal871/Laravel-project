@@ -2,19 +2,20 @@
 
 use App\Http\Controllers\Auth\VerificationController;
 use App\Models\User;
-use App\Http\Controllers\MedicineController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AddressController;
-use App\Http\Controllers\StripePaymentController;
-use App\Http\Controllers\SendMailController;
-
-
-use App\Notifications\MailNotification;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
+//use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\DoctorController;
+use App\Models\Doctor;
+use App\Http\Controllers\AreaController;
+use App\Mail\NotifyUserMail;
+use App\Models\Area;
+
+//need to use pharmacy controller
+
+use App\Http\Controllers\PharmacyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,7 +72,6 @@ Route::get('/addresses/{address}', [AddressController::class,'showAddress'])->na
 // Route::post('/send_emails', [SendMailController::class, 'send_emails'])->name('send_emails');
 
 
-
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
@@ -91,7 +91,7 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 
 
 //USER
-Route::get('/users', [UserController::class,'index'])->name('users.index');
+Route::get('/users', [UserController::class,'index'])->name('users.index')->middleware('auth');
 Route::get('/users/create', [UserController::class,'create'])->name('users.create');
 Route::post('/users', [UserController::class, 'store'])->name('users.store');
 // Route::get("/users/removeOld", [UserController::class,'removeOldPosts']);
@@ -100,15 +100,15 @@ Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edi
 Route::put('/users/{post}', [UserController::class, 'update'])->name('users.update');
 Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
+Route::resource('pharmacies', PharmacyController::class);
+Route::get('/pharmacies/create', [PharmacyController::class,'create'])->name('pharmacies.create');
+Route::get('/pharmacies/{pharmacy}', [PharmacyController::class,'show'])->name('pharmacies.show');
+Route::get('/pharmacies', [PharmacyController::class,'index'])->name('pharmacies.index');
+Route::post('/pharmacies', [PharmacyController::class, 'store'])->name('pharmacies.store');
+Route::get('/pharmacies/{id}/edit', [PharmacyController::class, 'edit'])->name('pharmacies.edit');
+Route::put('/pharmacies/{post}', [PharmacyController::class, 'update'])->name('pharmacies.update');
+Route::delete('/pharmacies/{id}', [PharmacyController::class, 'destroy'])->name('pharmacies.destroy');
+Route::put('pharmacies/{id}/restore', [PharmacyController::class, 'restore'])->name('pharmacies.restore');
 
-
-//Email-verification
-
-
-
-Auth::routes(['verify' => true]);
-
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-
+Route::put('/pharmacies/{pharmacy}/doctors/{doctor}/ban', [PharmacyController::class, 'ban'])->name('pharmacies.doctors.ban')->middleware('can:ban,doctor');
+Route::put('/pharmacies/{pharmacy}/doctors/{doctor}/unban', [PharmacyController::class, 'unban'])->name('pharmacies.doctors.unban')->middleware('can:unban,doctor');

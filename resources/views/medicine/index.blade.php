@@ -28,6 +28,7 @@
                     @endif
                 </div>
             </div>
+            <br>
         </div>
     @endsection
 

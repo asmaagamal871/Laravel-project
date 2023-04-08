@@ -6,16 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Traits\HasRoles;
 
+
 class Area extends Model
 {
-    use HasFactory,HasRoles;
-   
-    public function Address(){
-        return $this->hasMany(Address::class);
-    }
-
-
-   
+    use HasFactory;
     protected $table = 'areas';
+    protected $fillable = [
+        'name',
+    ];
 
+
+
+public function address()
+{
+    return $this->hasMany(Address::class);
+    
+    
 }
+
+
+}   
+
