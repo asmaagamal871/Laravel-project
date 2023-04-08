@@ -26,6 +26,7 @@ class Pharmacy extends Model implements BannableContract
         'image',
         'area_id',
         'priority',
+        'image_path',
     ];
 
     protected $dates = [

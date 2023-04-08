@@ -127,16 +127,22 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 
 //PHARMACY
 //Route::middleware(['auth'])->group(function (){
-
+Route::get('/pharmacies/deleted', [PharmacyController::class, 'deleted'])->name('pharmacies.deleted');
 Route::resource('pharmacies', PharmacyController::class);
 Route::get('/pharmacies/create', [PharmacyController::class,'create'])->name('pharmacies.create');
 Route::get('/pharmacies/{pharmacy}', [PharmacyController::class,'show'])->name('pharmacies.show');
 Route::get('/pharmacies', [PharmacyController::class,'index'])->name('pharmacies.index');
+
 Route::post('/pharmacies', [PharmacyController::class, 'store'])->name('pharmacies.store');
 Route::get('/pharmacies/{id}/edit', [PharmacyController::class, 'edit'])->name('pharmacies.edit');
 Route::put('/pharmacies/{post}', [PharmacyController::class, 'update'])->name('pharmacies.update');
 Route::delete('/pharmacies/{id}', [PharmacyController::class, 'destroy'])->name('pharmacies.destroy');
+
 Route::put('pharmacies/{id}/restore', [PharmacyController::class, 'restore'])->name('pharmacies.restore');
+
+
+
+
 
 Route::put('/pharmacies/{pharmacy}/doctors/{doctor}/ban', [PharmacyController::class, 'ban'])->name('pharmacies.doctors.ban')->middleware('can:ban,doctor');
 Route::put('/pharmacies/{pharmacy}/doctors/{doctor}/unban', [PharmacyController::class, 'unban'])->name('pharmacies.doctors.unban')->middleware('can:unban,doctor');
