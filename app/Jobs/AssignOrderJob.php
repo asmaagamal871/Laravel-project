@@ -14,7 +14,10 @@ use Illuminate\Queue\SerializesModels;
 
 class AssignOrderJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new job instance.
@@ -29,10 +32,10 @@ class AssignOrderJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $orders=Order::where('status','new')->get();
-        foreach($orders as $order){
-            $order->pharmacy_id=Pharmacy::where('area_id',Address::find($order->address_id)->area_id)
-            ->orderby('priority','desc')
+        $orders=Order::where('status', 'new')->get();
+        foreach ($orders as $order) {
+            $order->pharmacy_id=Pharmacy::where('area_id', Address::find($order->address_id)->area_id)
+            ->orderby('priority', 'desc')
             ->first()
             ->id;
             $order->status='processing';

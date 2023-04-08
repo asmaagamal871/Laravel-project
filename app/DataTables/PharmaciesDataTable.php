@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\Pharmacy;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -31,9 +32,8 @@ class PharmaciesDataTable extends DataTable
         ->addColumn('created_at', function (Pharmacy $pharmacy) {
             return date('Y-m-d', strtotime($pharmacy->created_at));
         })
-        // ->addColumn('User', function (Pharmacy $pharmacy) {
-        //     return $order->user->type->name??"";
-        // })
+        
+
             ->setRowId('id');
     }
 
@@ -42,6 +42,11 @@ class PharmaciesDataTable extends DataTable
      */
     public function query(Pharmacy $model): QueryBuilder
     {
+        if (Auth::user()->hasRole(['admin'])) {
+            return $model->newQuery()->withTrashed();
+        } elseif (Auth::user()->hasRole('pharmacy')) {
+            // return $model->newQuery()->where('id', $user->id)->withTrashed();
+        } 
         return $model->newQuery();
     }
 
@@ -58,9 +63,6 @@ class PharmaciesDataTable extends DataTable
                     ->orderBy(1)
                     ->selectStyleSingle()
                     ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
                         Button::make('print'),
                         Button::make('reset'),
                         Button::make('reload')
@@ -76,8 +78,8 @@ class PharmaciesDataTable extends DataTable
 
             Column::make('id'),
             // Column::make('add your columns'),
-           
-            Column::computed('name','name'),
+
+            Column::computed('name', 'name'),
             Column::make('created_at'),
             // Column::make('updated_at'),
             Column::computed('action')

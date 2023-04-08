@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('gender',['male','female']);
             $table->date('DOB');
             $table->string('mob_num');
-            $table->string('image')->default('public/doctors/default.png');
+            $table->string('image')->default('public/default.png');
             $table->string('national_id');
             
         });

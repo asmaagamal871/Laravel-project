@@ -25,7 +25,7 @@ class MedicineController extends Controller
         // }
         //dd($allmedicine);
 
-        return $dataTable->render('medicine.index');
+        return $dataTable->render('medicines.index');
 
     }
     //   //============================================show======================================

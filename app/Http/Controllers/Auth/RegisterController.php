@@ -89,7 +89,7 @@ class RegisterController extends Controller
             ]
         );
 
-
+      
         $mainUser = User::factory()->create(
             [
                 'name' => $data['name'],

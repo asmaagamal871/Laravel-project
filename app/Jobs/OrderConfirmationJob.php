@@ -33,6 +33,5 @@ class OrderConfirmationJob implements ShouldQueue
     public function handle(): void
     {
         $this->client->notify((new OrderConfirmationNotification($this->order)));
-
     }
 }

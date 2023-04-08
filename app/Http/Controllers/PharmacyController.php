@@ -20,12 +20,13 @@ use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PharmacyController extends Controller
 {
-    // public function index(PharmaciesDataTable $dataTable)
-    // {
-    //     $user = Auth::user();
+    public function index(PharmaciesDataTable $dataTable)
+    {
+        // $user = Auth::user();
 
     //     // if ($user->can('manage-pharmacies') || ($user->can('update-own-pharmacy'))) {
     //     // //($user->can('manage-pharmacies')) {
@@ -39,9 +40,60 @@ class PharmacyController extends Controller
     //     //     abort(403, 'unauthorized action');
     //     // }
 
-    //     return $dataTable->render('pharmacies.index');
+        return $dataTable->render('pharmacies.index');
 
-    // }
+        // if ($user->can('manage-pharmacies')) {
+        //     //($user->can('manage-pharmacies')) {
+        //     //$pharmacy = Pharmacy::orderBy('priority')->get();
+        //     //$pharmacy = Pharmacy::all();
+        //     $pharmacy = Pharmacy::withoutTrashed()->get();
+        //     return view('pharmacies.index', ['pharmacies' => $pharmacy]);
+        // }
+        // //$pharmacy = Pharmacy::whereNull('deleted_at')->get();
+        // //dd($pharmacies);
+        // else {
+        //     abort(403, 'unauthorized action');
+        // }
+    }
+
+    public function revenue()
+    {
+        $user = Auth::user();
+        if ($user->hasRole('admin')) {
+            $pharmacies = Pharmacy::all();
+            foreach ($pharmacies as $pharmacy) { //everytime the function is accessed it calculates the revenue and updates pharmacy info
+                $orders = $pharmacy->orders()->get();
+                $order_count = 0;
+                $revenue = 0;
+                foreach ($orders as $order) {
+                    if ($order->status == 'delivered') {
+                        $order_count++;
+                        $revenue += $order->total_price;
+                    }
+                }
+                $pharmacy->total_orders = $order_count;
+                $pharmacy->total_revenue = $revenue;
+                $pharmacy->save();
+            }
+            return view('pharmacies.revenue', ['pharmacies' => $pharmacies]);
+        }
+        if ($user->hasRole('pharmacy')) {
+            $pharmacy = Pharmacy::find($user->id);
+            $orders = $pharmacy->orders()->get();
+            $order_count = 0;
+            $revenue = 0;
+            foreach ($orders as $order) {
+                if ($order->status == 'delivered') {
+                    $order_count++;
+                    $revenue += $order->total_price;
+                }
+            }
+            $pharmacy->total_orders = $order_count;
+            $pharmacy->total_revenue = $revenue;
+            $pharmacy->save();
+            return view('pharmacies.revenue', ['pharmacy' => $pharmacy]);
+        }
+    }
 
     public function create()
     {
@@ -59,12 +111,21 @@ class PharmacyController extends Controller
 
     public function store(Request $request)
     {
+        $path = 'public/doctors/default.png';
+        if ($request['image']) {
+            $path = Storage::putFileAs(
+                'public/pharmacies',
+                request()->file('image'),
+                request()->file('image')->getClientOriginalName()
+            );
+        }
+
         $user = Auth::user();
         if ($user->can('manage-pharmacies')) {
             $newUser = Pharmacy::factory()->create(
                 [
 
-                    //'image' => $path,
+                    'image' => $path,
                     'national_id' => $request->input('national_id'),
                     'area_id' => $request->input('area_id'),
                     'priority' => $request->input('priority')
@@ -148,7 +209,7 @@ class PharmacyController extends Controller
                 $pharmacy->priority = $request['priority'];
                 $pharmacy->area_id = $request['area_id'];
                 $pharmacy->national_id = $request['national_id'];
-                //$pharmacy->image = $request['image'];
+                $pharmacy->image = $request['image'];
             }
 
             if ($user->can('update-own-pharmacy')) {
@@ -231,6 +292,19 @@ class PharmacyController extends Controller
             return redirect()->back()->with('success', 'Doctor unbanned successfully.');
         } else {
             // User does not have permission to unban doctor
+            abort(403, 'unauthorized action');
+        }
+    }
+    public function deleted()
+    {
+        //$pharmacies = Pharmacy::onlyTrashed()->get();
+        $user = Auth::user();
+
+        if ($user->can('manage-pharmacies')) {
+            $pharmacy = Pharmacy::onlyTrashed()->get();
+
+            return view('pharmacies.deleted', ['pharmacies' => $pharmacy]);
+        } else {
             abort(403, 'unauthorized action');
         }
     }

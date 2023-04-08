@@ -13,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Pharmacy extends Model implements BannableContract
 {
-    use HasFactory,SoftDeletes,Bannable;
+    use HasFactory,SoftDeletes,Bannable,HasRoles;
     
     protected $table = 'pharmacies';
 
@@ -26,6 +26,7 @@ class Pharmacy extends Model implements BannableContract
         'image',
         'area_id',
         'priority',
+        'image_path',
     ];
 
     protected $dates = [
@@ -44,7 +45,7 @@ class Pharmacy extends Model implements BannableContract
     }
     public function orders()
     {
-        return $this->hasMany(Order::class)->onDelete('cascade');
+        return $this->hasMany(Order::class);
     }
 
 
