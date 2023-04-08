@@ -37,7 +37,7 @@
         </div>
 
         <div class="col-md-6">
-        <input class="form-control" type="file" id="formFile" accept=".jpg,.jpeg" name="avatar" />
+        <input class="form-control" type="file" id="formFile" accept=".jpg,.jpeg" name="image" />
     </div>
 
 

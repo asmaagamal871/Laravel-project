@@ -19,17 +19,21 @@ use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PharmacyController extends Controller
 {
+    
     public function index()
     {
+
         $user = Auth::user();
 
-        if ($user->can('manage-pharmacies') || ($user->can('update-own-pharmacy'))) {
-        //($user->can('manage-pharmacies')) {
-            $pharmacy = Pharmacy::all();
-            $pharmacy = Pharmacy::withTrashed()->get();
+        if ($user->can('manage-pharmacies')) {
+            //($user->can('manage-pharmacies')) {
+            //$pharmacy = Pharmacy::orderBy('priority')->get();
+            //$pharmacy = Pharmacy::all();
+            $pharmacy = Pharmacy::withoutTrashed()->get();
             return view('pharmacies.index', ['pharmacies' => $pharmacy]);
         }
         //$pharmacy = Pharmacy::whereNull('deleted_at')->get();
@@ -39,6 +43,13 @@ class PharmacyController extends Controller
         }
     }
 
+    /*public function getImagePathAttribute()
+{
+    return $this->image ? asset('storage/' . $this->image) : asset('img/default-image.png');
+}*/
+
+    
+
     function create()
     {
         $user = Auth::user();
@@ -47,7 +58,7 @@ class PharmacyController extends Controller
             $areas = Area::all();
             $pharmacy = Pharmacy::all();
 
-            return view('pharmacies.create', ['pharmacy' => $pharmacy],['areas' => $areas]);
+            return view('pharmacies.create', ['pharmacy' => $pharmacy], ['areas' => $areas]);
         } else {
             abort(403, 'unauthorized action');
         }
@@ -55,6 +66,14 @@ class PharmacyController extends Controller
 
     public function store(Request $request)
     {
+        $path = 'public/doctors/default.png';
+        if ($request['image']) {
+            $path = Storage::putFileAs(
+                'public/pharmacies',
+                request()->file('image'),
+                request()->file('image')->getClientOriginalName()
+            );
+        }
 
         $user = Auth::user();
         if ($user->can('manage-pharmacies')) {
@@ -62,7 +81,7 @@ class PharmacyController extends Controller
             $newUser = Pharmacy::factory()->create(
                 [
 
-                    //'image' => $path,
+                    'image' => $path,
                     'national_id' => $request->input('national_id'),
                     'area_id' => $request->input('area_id'),
                     'priority' => $request->input('priority')
@@ -105,7 +124,7 @@ class PharmacyController extends Controller
         $user = Auth::user();
         $pharmacy = Pharmacy::withTrashed()->findOrFail($id);
         if ($user->can('manage-pharmacies')) {
-            
+
             $doctors = $pharmacy->doctors;
 
             foreach ($doctors as $doctor) {
@@ -137,7 +156,6 @@ class PharmacyController extends Controller
             // User does not have permission to edit pharmacy
             abort(403, 'unauthorized action');
         }
-
     }
 
     public function update(Request $request, $id)
@@ -153,7 +171,7 @@ class PharmacyController extends Controller
                 $pharmacy->priority = $request['priority'];
                 $pharmacy->area_id = $request['area_id'];
                 $pharmacy->national_id = $request['national_id'];
-                //$pharmacy->image = $request['image'];
+                $pharmacy->image = $request['image'];
 
             }
 
@@ -224,15 +242,12 @@ class PharmacyController extends Controller
 
 
             $doctor->ban();
-                
-            return redirect()->back()->with('success', 'Doctor banned successfully.');
 
-            
-         }else {
+            return redirect()->back()->with('success', 'Doctor banned successfully.');
+        } else {
             // User does not have permission to edit pharmacy
             abort(403, 'unauthorized action');
         }
-
     }
 
     public function unban(Pharmacy $pharmacy, Doctor $doctor)
@@ -243,12 +258,27 @@ class PharmacyController extends Controller
 
             $doctor->unban();
 
-           
+
             return redirect()->back()->with('success', 'Doctor unbanned successfully.');
-            
-         } else {
+        } else {
             // User does not have permission to unban doctor
             abort(403, 'unauthorized action');
         }
     }
+    public function deleted()
+    {
+        //$pharmacies = Pharmacy::onlyTrashed()->get();
+        $user = Auth::user();
+
+        if ($user->can('manage-pharmacies')) {
+
+            $pharmacy = Pharmacy::onlyTrashed()->get();
+            
+            return view('pharmacies.deleted', ['pharmacies' => $pharmacy]);
+
+        } else {
+            abort(403, 'unauthorized action');
+        }
+    }
+
 }

@@ -4,10 +4,12 @@
 
 <div class="text-center">
     <a href="{{route('pharmacies.create')}}" class="mt-4 btn btn-success">Add new Pharmacy</a>
+    <a href="{{route('pharmacies.deleted')}}" class="mt-4 btn btn-danger">Deleted Pharmacies</a>
 </div>
 <table class="table mt-4">
     <thead>
         <tr>
+            <th scope="col">image</th>
             <th scope="col">id</th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
@@ -24,7 +26,7 @@
         @foreach($pharmacies as $pharmacy)
 
         <tr>
-            <!-- <td> <img src="{{ $pharmacy->image_path }}"  width="50">> </td> -->
+        <td><img src="{{Storage::url($pharmacy->image)}}" width="150px"></td>
             <td>{{$pharmacy->id}}</td>
             @if($pharmacy->type)
             <td>{{$pharmacy->type->name}}</td>
