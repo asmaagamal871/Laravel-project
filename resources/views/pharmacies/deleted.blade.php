@@ -26,7 +26,7 @@
         @foreach($pharmacies as $pharmacy)
 
         <tr>
-        <td><img src="{{($pharmacy->image) }}" width="100" height="100"></td>
+        <td><<img src="{{Storage::url($pharmacy->image)}}" width="150px">></td>
             <td>{{$pharmacy->id}}</td>
             @if($pharmacy->type)
             <td>{{$pharmacy->type->name}}</td>
