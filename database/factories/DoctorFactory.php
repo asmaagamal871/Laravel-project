@@ -12,7 +12,8 @@ class DoctorFactory extends Factory
             return [
                 // Add any other doctor-specific attributes here
                 'national_id' => fake()->unique()->randomNumber(8,true),
-                'is_banned'=>fake()->boolean,
+                'pharmacy_id'=>fake()->numberBetween(1, 5),
+                
             ];
         
     }

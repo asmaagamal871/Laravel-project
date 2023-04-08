@@ -1,5 +1,40 @@
 @extends('layouts.app')
+@section('title')
+    Pharmacies
+@endsection
+@section('breadcrumb')
+    All Pharmacies
+@endsection
+@section('content')
 
+
+<div class="container">
+    <div class="text-center">
+        <a href="{{route('pharmacies.create')}}" class="mb-4 btn btn-success">Add new Pharmacy</a>
+        <a href="{{route('pharmacies.deleted')}}" class="mb-4 btn btn-danger">Deleted Pharmacies</a>
+    </div>
+    <div class="card">
+        <div class="card-header">Manage Pharmacies</div>
+        <div class="card-body">
+            {{ $dataTable->table() }}
+        </div>
+    </div>
+    <br>
+</div>
+
+@endsection
+@push('scripts')
+    {{ $dataTable->scripts() }}
+@endpush
+
+
+{{-- @extends('layouts.app')
+@section('breadcrumb')
+All Pharmacies
+@endsection
+@section('title')
+Pharmacies
+@endsection
 @section('content')
 
 <div class="text-center">
@@ -88,9 +123,10 @@
                 </div>
             </div>
         </div>
-        @endforeach
-    </tbody>
-
-</table>
-
+    </div>
+    <br>
+</div>
 @endsection
+@push('scripts')
+    {{ $dataTable->scripts() }}
+@endpush --}}

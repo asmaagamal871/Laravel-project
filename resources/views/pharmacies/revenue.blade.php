@@ -21,12 +21,12 @@ View revenue
             @foreach($pharmacies as $pharmacy)
             <tr>
                 <td><img src="{{Storage::url($pharmacy->image)}}" width="150px"></td>
-                <td>{{$pharmacy->name}}
-                <td>
+                <td>{{$pharmacy->type->name}}</td>
+                
                 <td>{{$pharmacy->total_orders}}
-                <td>
+                </td>
                 <td>{{$pharmacy->total_revenue}}
-                <td>
+                </td>
             </tr>
             @endforeach
         </tbody>
@@ -47,7 +47,7 @@ View revenue
         <tbody>
             <tr>
                 <td><img src="{{Storage::url($pharmacy->image)}}" width="150px"></td>
-                <td>{{$pharmacy->name}}
+                <td>{{$pharmacy->type->name}}
                 <td>
                 <td>{{$pharmacy->total_orders}}
                 <td>

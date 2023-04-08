@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\AssignOrderJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,6 +14,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('app:send-email-to-inactive-users-command')->everyMinute();
+        $schedule->job(new AssignOrderJob)->everyMinute();
     }
 
     /**

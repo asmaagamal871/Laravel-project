@@ -4,18 +4,20 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Area>
+ */
 class AreaFactory extends Factory
 {
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
-            return [
-                // Add any other area-specific attributes here
-                'name' => fake()->name,
-                
-                
-                
-            ];
-        
+        return [
+            'name'=>fake()->name()
+        ];
     }
 }

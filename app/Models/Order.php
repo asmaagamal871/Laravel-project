@@ -8,10 +8,11 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Order extends Model
 {
-    use HasFactory, HasRoles;
+    use HasFactory;
     protected $table = 'orders';
 
     protected $fillable = [
+        'status',
         'is_insured',
         'address_id',
         'visa',

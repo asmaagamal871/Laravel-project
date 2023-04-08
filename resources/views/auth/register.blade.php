@@ -86,7 +86,7 @@
                         <div class="row mb-3">
                             <label for="formFile" class="col-md-4 col-form-label text-md-end">Choose avatar</label>
                             <div class="col-md-6">
-                                <input class="form-control" type="file" id="formFile" accept=".jpg,.jpeg" name="avatar" />
+                                <input class="form-control" type="file" id="formFile" accept=".jpg,.jpeg" name="image" />
                             </div>
                         </div>
                         <div class="row mb-3">

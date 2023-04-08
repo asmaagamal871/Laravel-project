@@ -2,20 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Doctor;
 use App\Models\Area;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Factories\factory;
 
 class AreaSeeder extends Seeder
 {
-     public function run()
-     {
-          Area::factory(5)->create()->each(function ($user) {
-          $user->type()->save(User::factory()->create());
-          });
-          
-          
-     }
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        Area::factory(2)->create();
+    }
 }

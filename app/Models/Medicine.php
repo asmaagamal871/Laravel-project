@@ -8,7 +8,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Medicine extends Model
 {
-    use HasFactory,HasRoles;
+    use HasFactory;
     protected $fillable=[
         'name',
         'type',

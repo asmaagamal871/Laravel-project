@@ -18,7 +18,8 @@ class PharmacyFactory extends Factory
     {
         return [
             'national_id' => fake()->unique()->randomNumber(8, true),
-            'priority' => fake()->numberBetween(1, 5)
+            'priority' => fake()->numberBetween(1, 5),
+            'area_id'=>fake()->numberBetween(1, 2),
         ];
     }
 }

@@ -1,7 +1,7 @@
 <div class="btn-group">
-    <a href="" class="btn btn-primary">Edit</a>
-    <a href=" {{ route('users.show', $user->id) }}" class="btn btn-success">View</a>
-    <form action="" method="POST">
+    <a href="{{ route('users.edit', $endUser->id) }}" class="btn btn-primary">Edit</a>
+    <a href=" {{ route('users.show', $endUser->id) }}" class="btn btn-success">View</a>
+    <form method="POST" action="{{ route('users.destroy', $endUser->id) }}" enctype="multipart/form-data">
         @csrf
         @method('DELETE')
         <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>

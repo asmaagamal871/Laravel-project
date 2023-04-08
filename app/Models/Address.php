@@ -8,7 +8,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Address extends Model
 {
-    use HasFactory,HasRoles ;
+    use HasFactory;
     protected $table = 'addresses';
 
     protected $fillable = [

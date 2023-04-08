@@ -42,8 +42,7 @@
 
 
         <button class="btn btn-success">Create new Pharmacy</button>
-
-
     </form>
+@endsection
 
     

@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Doctor extends user implements BannableInterface
 {
+    use Bannable;
     use HasFactory,HasRoles;
     
      protected $table = 'doctors';
@@ -21,9 +22,9 @@ class Doctor extends user implements BannableInterface
     protected $fillable = [
         
         'national_id',
-        'avatar', 
+        'image', 
         'is_baned',
-        'created_at'
+        'pharmacy_id',
 
        ];
     

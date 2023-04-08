@@ -17,7 +17,7 @@ class EndUserFactory extends Factory
     public function definition(): array
     {
         return [
-            // 'national_id' => fake()->unique()->randomNumber(8, true),
+            'national_id' => fake()->unique()->randomNumber(8, true),
             'DOB' => now(),
             'gender'=>'female',
             'mob_num'=>fake()->unique()->phoneNumber()

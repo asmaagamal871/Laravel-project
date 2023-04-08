@@ -15,12 +15,12 @@ return new class() extends Migration
             $table->id();
             $table->timestamps();
             $table->string('national_id');
-            $table->string('image')->default('public/doctors/default.png');
+            $table->string('image')->default('public/default.png');
             $table->unsignedBigInteger('area_id')->nullable();
             $table->foreign('area_id')->references('id')->on('areas');
             $table->integer('priority');
-            $table->integer('total_orders');
-            $table->float('total_revenue');
+            $table->integer('total_orders')->default(0);
+            $table->float('total_revenue')->default(0.0);
         });
     }
 

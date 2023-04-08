@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\PharmaciesDataTable;
 use App\Http\Requests\StorePharmacyRequest;
 use App\Http\Requests\UpdatePharmacyRequest;
 use App\Http\Requests\BanDoctorRequest;
@@ -23,30 +24,42 @@ use Illuminate\Support\Facades\Storage;
 
 class PharmacyController extends Controller
 {
-    
-    public function index()
+    public function index(PharmaciesDataTable $dataTable)
     {
+        // $user = Auth::user();
 
-        $user = Auth::user();
+    //     // if ($user->can('manage-pharmacies') || ($user->can('update-own-pharmacy'))) {
+    //     // //($user->can('manage-pharmacies')) {
+    //     //     $pharmacy = Pharmacy::all();
+    //     //     $pharmacy = Pharmacy::withTrashed()->get();
+    //     //     return view('pharmacies.index', ['pharmacies' => $pharmacy]);
+    //     // }
+    //     // //$pharmacy = Pharmacy::whereNull('deleted_at')->get();
+    //     // //dd($pharmacies);
+    //     // else {
+    //     //     abort(403, 'unauthorized action');
+    //     // }
 
-        if ($user->can('manage-pharmacies')) {
-            //($user->can('manage-pharmacies')) {
-            //$pharmacy = Pharmacy::orderBy('priority')->get();
-            //$pharmacy = Pharmacy::all();
-            $pharmacy = Pharmacy::withoutTrashed()->get();
-            return view('pharmacies.index', ['pharmacies' => $pharmacy]);
-        }
-        //$pharmacy = Pharmacy::whereNull('deleted_at')->get();
-        //dd($pharmacies);
-        else {
-            abort(403, 'unauthorized action');
-        }
+        return $dataTable->render('pharmacies.index');
+
+        // if ($user->can('manage-pharmacies')) {
+        //     //($user->can('manage-pharmacies')) {
+        //     //$pharmacy = Pharmacy::orderBy('priority')->get();
+        //     //$pharmacy = Pharmacy::all();
+        //     $pharmacy = Pharmacy::withoutTrashed()->get();
+        //     return view('pharmacies.index', ['pharmacies' => $pharmacy]);
+        // }
+        // //$pharmacy = Pharmacy::whereNull('deleted_at')->get();
+        // //dd($pharmacies);
+        // else {
+        //     abort(403, 'unauthorized action');
+        // }
     }
 
-    public function revenue() 
+    public function revenue()
     {
         $user = Auth::user();
-        if ($user->hasRoles('admin')) {
+        if ($user->hasRole('admin')) {
             $pharmacies = Pharmacy::all();
             foreach ($pharmacies as $pharmacy) { //everytime the function is accessed it calculates the revenue and updates pharmacy info
                 $orders = $pharmacy->orders()->get();
@@ -59,12 +72,12 @@ class PharmacyController extends Controller
                     }
                 }
                 $pharmacy->total_orders = $order_count;
-                $pharmacy->revenue = $revenue;
+                $pharmacy->total_revenue = $revenue;
                 $pharmacy->save();
             }
             return view('pharmacies.revenue', ['pharmacies' => $pharmacies]);
         }
-        if ($user->hasRoles('pharmacy')) {
+        if ($user->hasRole('pharmacy')) {
             $pharmacy = Pharmacy::find($user->id);
             $orders = $pharmacy->orders()->get();
             $order_count = 0;
@@ -76,13 +89,13 @@ class PharmacyController extends Controller
                 }
             }
             $pharmacy->total_orders = $order_count;
-            $pharmacy->revenue = $revenue;
+            $pharmacy->total_revenue = $revenue;
             $pharmacy->save();
             return view('pharmacies.revenue', ['pharmacy' => $pharmacy]);
         }
     }
 
-    function create()
+    public function create()
     {
         $user = Auth::user();
 
@@ -109,7 +122,6 @@ class PharmacyController extends Controller
 
         $user = Auth::user();
         if ($user->can('manage-pharmacies')) {
-
             $newUser = Pharmacy::factory()->create(
                 [
 
@@ -131,8 +143,7 @@ class PharmacyController extends Controller
             );
 
             $newUser->type()->save($mainUser);
-            $newUser->assignRole('pharmacy');
-            $newUser->givePermissionTo(['manage-own-doctors', 'update-own-pharmacy']);
+            $mainUser->assignRole('pharmacy');
             return redirect()->route('pharmacies.index');
         }
 
@@ -156,7 +167,6 @@ class PharmacyController extends Controller
         $user = Auth::user();
         $pharmacy = Pharmacy::withTrashed()->findOrFail($id);
         if ($user->can('manage-pharmacies')) {
-
             $doctors = $pharmacy->doctors;
 
             foreach ($doctors as $doctor) {
@@ -180,8 +190,6 @@ class PharmacyController extends Controller
         $user = Auth::user();
 
         if ($user->can('manage-pharmacies') || ($user->can('update-own-pharmacy') && $user->typeable->id == $pharmacy->id)) {
-
-
             // Return the edit view with the pharmacy and areas
             return view('pharmacies.edit', ['pharmacy' => $pharmacy]);
         } else {
@@ -192,11 +200,9 @@ class PharmacyController extends Controller
 
     public function update(Request $request, $id)
     {
-
         $pharmacy = Pharmacy::find($id);
         $user = Auth::user();
         if ($user->can('manage-pharmacies') || ($user->can('update-own-pharmacy') && $user->typeable->id == $pharmacy->id)) {
-
             if ($user->can('manage-pharmacies')) {
                 $pharmacy->type->name = $request['name'];
                 $pharmacy->type->email = $request['email'];
@@ -204,7 +210,6 @@ class PharmacyController extends Controller
                 $pharmacy->area_id = $request['area_id'];
                 $pharmacy->national_id = $request['national_id'];
                 $pharmacy->image = $request['image'];
-
             }
 
             if ($user->can('update-own-pharmacy')) {
@@ -226,13 +231,11 @@ class PharmacyController extends Controller
     }
 
     public function destroy($id)
-
     {
         $user = Auth::user();
         $pharmacy = Pharmacy::withTrashed()->findOrFail($id);
 
         if ($user->can('manage-pharmacies')) {
-
             if ($pharmacy->trashed()) {
                 $pharmacy->restore();
                 return redirect()->route('pharmacies.index')->with('success', 'Pharmacy restored successfully!');
@@ -251,13 +254,11 @@ class PharmacyController extends Controller
 
     public function restore($id)
     {
-
         //$pharmacy = Pharmacy::onlyTrashed()->where('id', $request->pharmacy);
         $user = Auth::user();
         $pharmacy = Pharmacy::withTrashed()->findOrFail($id);
 
         if ($user->can('manage-pharmacies')) {
-
             $pharmacy->restore();
 
             return redirect()->route('pharmacies.index')->with(['success' => 'Pharmacy Restored successfully']);
@@ -271,8 +272,6 @@ class PharmacyController extends Controller
         $user = Auth::user();
 
         if ($user->can('manage-pharmacies') || ($user->can('manage-own-doctors'))) {
-
-
             $doctor->ban();
 
             return redirect()->back()->with('success', 'Doctor banned successfully.');
@@ -287,7 +286,6 @@ class PharmacyController extends Controller
         $user = Auth::user();
 
         if ($user->can('manage-pharmacies') || ($user->can('manage-own-doctors'))) {
-
             $doctor->unban();
 
 
@@ -303,14 +301,11 @@ class PharmacyController extends Controller
         $user = Auth::user();
 
         if ($user->can('manage-pharmacies')) {
-
             $pharmacy = Pharmacy::onlyTrashed()->get();
-            
-            return view('pharmacies.deleted', ['pharmacies' => $pharmacy]);
 
+            return view('pharmacies.deleted', ['pharmacies' => $pharmacy]);
         } else {
             abort(403, 'unauthorized action');
         }
     }
-
 }

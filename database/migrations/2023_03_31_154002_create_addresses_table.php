@@ -14,14 +14,14 @@ return new class () extends Migration {
             $table->id();
             $table->timestamps();
             $table->string('st_name');
-            $table->integer('building_no');
+             $table->integer('building_no');
             $table->integer('floor_no');
             $table->integer('flat_no');
             $table->boolean('is_main')->default(0);
             $table->unsignedBigInteger('area_id')->nullable();
-           // $table->foreign('area_id')->references('id')->on('areas');
+           $table->foreign('area_id')->references('id')->on('areas');
             $table->unsignedBigInteger('end_user_id')->nullable();
-            //$table->foreign('end_user_id')->references('id')->on('end_users');
+            $table->foreign('end_user_id')->references('id')->on('end_users');
         });
     }
 
