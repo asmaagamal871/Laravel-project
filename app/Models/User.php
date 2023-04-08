@@ -8,13 +8,19 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
-    protected $table = 'users';
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use HasRoles;
 
-    
+
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +30,9 @@ class User extends Authenticatable
     protected $fillable = [
         'email',
         'password',
-        'name'
+        'name',
+        'email_verified_at',
+
     ];
 
     /**
@@ -45,7 +53,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
+
     public function typeable()
     {
         return $this->morphTo();

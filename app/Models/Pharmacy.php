@@ -16,6 +16,7 @@ class Pharmacy extends User
         'name',
         'email',
         'password',
+        'priority',
     ];
 
     protected $hidden = [

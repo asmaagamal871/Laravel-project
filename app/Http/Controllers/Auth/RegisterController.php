@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+
 use App\Jobs\SendMailJob;
 use App\Http\Controllers\Controller;
 use App\Models\EndUser;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -69,12 +71,11 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $path = 'public/doctors/default.png';
-        
-        if (request()->file('avatar')) {
+        if ($data['image']) {
             $path = Storage::putFileAs(
                 'public/endUsers',
-                request()->file('avatar'),
-                request()->file('avatar')->getClientOriginalName()
+                request()->file('image'),
+                request()->file('image')->getClientOriginalName()
             );
         }
 
@@ -82,13 +83,12 @@ class RegisterController extends Controller
             [
                 'gender' => $data['gender'],
                 'image' => $path,
-                'DOB' => $data['dateOfBirth'],
-                'mob_num' => $data['mobile_no']
+                'DOB'=>$data['dateOfBirth'],
+                'national_id'=>$data['national_id'],
+                'mob_num'=>$data['mobile_no'],
             ]
         );
 
-        $newUser->assignRole('end-user');
-        $newUser->givePermissionTo(['manage-own-addresses', 'manage-own-orders', 'update-own-user-info']);
 
         $mainUser = User::factory()->create(
             [
@@ -99,8 +99,14 @@ class RegisterController extends Controller
                 'typeable_id' => $newUser->id
             ]
         );
-      
+
+        $mainUser->assignRole('end-user');
+
         $newUser->type()->save($mainUser);
+
+        event(new Registered($mainUser));
+
+
         return $mainUser;
     }
 }

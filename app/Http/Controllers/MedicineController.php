@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\MedicinesDataTable;
 use App\Http\Requests\StoreMedicineRequest;
 use App\Models\Medicine;
 use App\Models\User;
@@ -10,107 +11,100 @@ use Illuminate\Support\Facades\Auth;
 
 class MedicineController extends Controller
 {
-  //============================================index============================================
-  public function index()
-  {
-    $user = Auth::user();
+    //============================================index============================================
+    public function index(MedicinesDataTable $dataTable)
+    {
+        // $user = Auth::user();
 
-    if ($user->can('manage-medicines')) {
+        // if ($user->can('manage-medicines')) {
+        //     //select * from posts
+        //     $allmedicine = Medicine::all();
+        //     return view('medicines.index', ['medicines' => $allmedicine]);
+        // } else {
+        //     abort(403, 'Unauthorized action.');
+        // }
+        //dd($allmedicine);
 
-      //select * from posts
-      $allmedicine = Medicine::all();
-      return view('medicines.index', ['medicines' => $allmedicine]);
+        return $dataTable->render('medicine.index');
+
     }
-    else {
-      abort(403, 'Unauthorized action.');
+    //   //============================================show======================================
+    public function showMedicine($id)
+    {
+        $medicine = Medicine::find($id);
+        return view('medicine.show', ['medicine' => $medicine]);
     }
-    //dd($allmedicine);
-
-  }
-  //   //============================================show======================================
-  public function showMedicine($id)
-  {
-    $medicine = Medicine::find($id);
-    return view('medicines.show', ['medicine' => $medicine]);
-  }
-  //   //==========================================create==================================
-  public function createMedicine()
-  {
-
-    return view('medicines.create');
-  }
-  //   //=============================================store=================================================================
-  public function storeMedicine(StoreMedicineRequest $request)
-  {
-    $valid_request = $request->validated();
-
-    $name = request()->name;
-    $type = request()->type;
-    $price = request()->price;
-    // dd($name,$type,$price)
-    $user = Auth::user();
-
-    if ($user->can('manage-medicines')) {
-
-      Medicine::create([
-        'name' => $name,
-        'type' => $type,
-        'price' => $price,
-
-
-      ]);
+    //   //==========================================create==================================
+    public function createMedicine()
+    {
+        return view('medicine.create');
     }
-    else {
-      abort(403, 'Unauthorized action.');
+    //   //=============================================store=================================================================
+    public function storeMedicine(StoreMedicineRequest $request)
+    {
+        $valid_request = $request->validated();
+
+        $name = request()->name;
+        $type = request()->type;
+        $price = request()->price;
+        // dd($name,$type,$price)
+        $user = Auth::user();
+
+        if ($user->can('manage-medicines')) {
+            Medicine::create([
+              'name' => $name,
+              'type' => $type,
+              'price' => $price,
+
+
+            ]);
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return to_route(route: 'medicines.index');
     }
-
-    return to_route(route: 'medicines.index');
-  }
-  //  //===========================================edit=====================================================
-  public function editMedicine($medicine)
-  {
-    $medicine = Medicine::find($medicine);
-    return view('medicines.edit', ['medicine' => $medicine]);
-  }
-  // //==============================================update============================================
-  public function updateMedicine($id, Request $request)
-  {
-
-    // $post = Post::where('id', $id)->first();
-    $medicine = Medicine::find($id);
-
-    //  $medicine->name = $request->input('name');
-    //  $medicine->type = $request->input('type');
-    //  $medicine->price = $request->input('price');
-    $user = Auth::user();
-
-    if ($user->can('manage-medicines')) {
-      $medicine->update([
-        'name' => $request->name,
-        'type' => $request->type,
-        'price' => $request->price
-
-      ]);
+    //  //===========================================edit=====================================================
+    public function editMedicine($medicine)
+    {
+        $medicine = Medicine::find($medicine);
+        return view('medicine.edit', ['medicine' => $medicine]);
     }
-    else {
-      abort(403, 'Unauthorized action.');
-    }
-    return to_route(route: 'medicines.index');
-  }
-  //   //=================================================delete================================================
-  public function destoryMedicine($id)
-  {
+    // //==============================================update============================================
+    public function updateMedicine($id, Request $request)
+    {
+        // $post = Post::where('id', $id)->first();
+        $medicine = Medicine::find($id);
 
-    $medicine = Medicine::where('id', $id);
-    $user = Auth::user();
+        //  $medicine->name = $request->input('name');
+        //  $medicine->type = $request->input('type');
+        //  $medicine->price = $request->input('price');
+        $user = Auth::user();
+
+        if ($user->can('manage-medicines')) {
+            $medicine->update([
+              'name' => $request->name,
+              'type' => $request->type,
+              'price' => $request->price
+
+            ]);
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+        return to_route(route: 'medicines.index');
+    }
+    //   //=================================================delete================================================
+    public function destoryMedicine($id)
+    {
+        $medicine = Medicine::where('id', $id);
+        $user = Auth::user();
 
 
-    if ($user->can('manage-medicines')) {
-    $medicine->delete();
+        if ($user->can('manage-medicines')) {
+            $medicine->delete();
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+        return to_route(route: 'medicines.index');
     }
-    else {
-      abort(403, 'Unauthorized action.');
-    }
-    return to_route(route: 'medicines.index');
-  }
 }

@@ -3,8 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\WelcomeNewUserJob;
+use App\Models\Client;
+use App\Models\User;
+use App\Notifications\WelcomeEmailNotification;
+use App\Notifications\WelcomeUserNotification;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\VerifiesEmails;
+use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
@@ -38,5 +45,22 @@ class VerificationController extends Controller
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+    }
+    public function verify(Request $request, $id, $hash)
+    {
+        $client = User::findOrFail($id);
+        if (!hash_equals((string) $hash, sha1(
+            $client->getEmailForVerification()
+        ))) {
+            throw new AuthorizationException();
+        }
+        if ($client->markEmailAsVerified()) {
+            WelcomeNewUserJob::dispatch($client);
+            
+        }
+
+        return response()->json([
+            'message' => 'Email verified successfully'
+        ]);
     }
 }

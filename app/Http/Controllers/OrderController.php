@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\OrdersDataTable;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Address;
@@ -11,30 +12,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreOrderRequest;
+use App\Jobs\OrderConfirmationJob;
+use App\Mail\OrderConfirmationMail;
 use App\Models\EndUser;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(OrdersDataTable $dataTable)
     {
-        $user = Auth::user();
-
-        if ($user->can('manage-orders')) { //admin
-            $allOrders = Order::all(); //select * from posts
-        } else if ($user->can('manage-own-orders')) { //user
-            $allOrders = Order::where('user_id', $user->typeable->id)->get();
-        } else if ($user->can('view-orders')) { //pharmacy
-            $allOrders = Order::where('pharmacy_id', $user->typeable->id)->get();
-        } else if ($user->can('update-order-status')) { //doctor
-            $allOrders = Order::where('pharmacy_id', $user->typeable->pharmacy_id)->get();
-        };
-        return view('order.index', ['orders' => $allOrders]);
+        return $dataTable->render('order.index');
     }
 
-    public  function show($id)
+    public function show($id)
     {
-        $order = Order::find($id);
+        // $order = Order::find(1);
+        // $user = User::find(5);
+        // dispatch(new OrderConfirmationJob($user, $order));
+
         return view('order.show', ['order' => $order]);
     }
 
@@ -43,20 +39,18 @@ class OrderController extends Controller
         $user = Auth::user();
 
         if ($user->can('manage-orders')) { //if admin
-
             $addresses = Address::all();
             $allUsers = EndUser::all();
 
             return view('order.create', ['addresses' => $addresses, 'all_users' => $allUsers]);
-        } else if ($user->can('manage-own-orders')) { //if end user
-
+        } elseif ($user->can('manage-own-orders')) { //if end user
             $addresses = Address::where('end_user_id', $user->typeable->id)->get();
 
             return view('order.create', ['addresses' => $addresses]);
         }
     }
 
-    public  function store(StoreOrderRequest $request)
+    public function store(StoreOrderRequest $request)
     {
         $valid_request = $request->validated();
 
@@ -109,30 +103,29 @@ class OrderController extends Controller
         }
     }
 
-    public  function edit($id)
+    public function edit($id)
     {
         $user = Auth::user();
 
         if ($user->can('manage-orders')) { //if admin
-
             $addresses = Address::all();
             $allUsers = EndUser::all();
             return view('order.edit', ['addresses' => $addresses, 'all_users' => $allUsers]);
-        } else if ($user->can('manage-own-orders')) { //if end user
+        } elseif ($user->can('manage-own-orders')) { //if end user
             $order = Order::find($id);
             $addresses = Address::where('end_user_id', $user->typeable->id)->get();
             return view('order.edit', ['addresses' => $addresses, 'order' => $order]);
-        } else if ($user->can('update-order-status')) { //if doctor
+        } elseif ($user->can('update-order-status')) { //if doctor
             $doctor = $user->typeable;
             $pharmacy = $doctor->pharmacy()->first();
             $orders = $pharmacy->orders()->get();
             return view('order.edit', ['orders' => $orders]);
-        } else if ($user->can('edit-orders')) { //if pharmacy
+        } elseif ($user->can('edit-orders')) { //if pharmacy
             $pharmacy = $user->typeable;
         }
     }
 
-    public  function update($id)
+    public function update($id)
     {
         $user = Auth::user();
         $order = Order::find($id);
@@ -148,9 +141,9 @@ class OrderController extends Controller
                     if ($prescriptions) {
                         $old_prescriptions = $order->prescriptions()->get(); //get all prescriptions of this order
                         foreach ($old_prescriptions as $prescription) {
-                            if (Storage::exists($prescription->prescription)) { 
+                            if (Storage::exists($prescription->prescription)) {
                                 Storage::delete($prescription->prescription); //delete from storage
-                                 //delete record
+                                //delete record
                             }
                             $prescription->delete(); //delete all old prescriptions to add new ones
                         }
@@ -181,7 +174,7 @@ class OrderController extends Controller
         }
     }
 
-    public  function destroy($id)
+    public function destroy($id)
     {
         $order = Order::find($id);
         $user = Auth::user();
@@ -195,7 +188,7 @@ class OrderController extends Controller
                 $prescription->delete();
             }
             $orderMedicines = $order->orderMedicines()->get(); //get all records from order_include_medicine (actual order by pharmacy)
-            if ($orderMedicines) { //if exists 
+            if ($orderMedicines) { //if exists
                 foreach ($orderMedicines as $orderMedicine) {
                     $orderMedicine->delete();
                 }

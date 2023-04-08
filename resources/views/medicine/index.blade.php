@@ -1,5 +1,41 @@
 @extends('layouts.app')
+
 @section('content')
+    <div class="container">
+        @if ($errors->any())
+            <br>
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <div style="margin: 40px;">
+            @can('manage-own-orders')
+                <div class="text-center">
+                    <a href="{{ route('medicines.create') }}" class="mt-4 btn btn-success">Create medicine</a>
+                </div>
+            @endcan
+            <div class="card">
+                <div class="card-header">Manage Orders</div>
+                <div class="card-body">
+                    @if ($dataTable->table())
+                        {{ $dataTable->table() }}
+                    @else
+                        <label class="danger"> {{ $error }} </label>
+                    @endif
+                </div>
+            </div>
+        </div>
+    @endsection
+
+    @push('scripts')
+        {{ $dataTable->scripts() }}
+    @endpush
+
+    {{-- @section('content')
 
 <div class="text-center">
         <button type="button" class="mt-4 btn btn-success"><a  class="text-decoration-none" href="{{route('medicines.create')}}">Create medicine</a></button>
@@ -15,7 +51,7 @@
         </thead>
         <tbody>
 
-        @foreach($medicines as $medicine)
+        @foreach ($medicines as $medicine)
             <tr>
                <td>{{$medicine->id}}</td>
                 <td>{{$medicine->name}}</td>
@@ -39,5 +75,4 @@
         </tbody>
     </table>
 
-@endsection
-
+@endsection --}}
