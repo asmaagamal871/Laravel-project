@@ -118,7 +118,7 @@ Edit order
      @if (session('error'))
      <div role="alert" class="fw-bold fs-5 mb-3 text-center text-danger">{{ session('error') }}</div>
      @endif
-
+@if($order->status=='new'||$order->status=='waitingCustConfirmation'||$order->status=='processing')
      <div class="mb-3">
          <label for="exampleFormControlInput1" class="form-label">Prescriptions</label>
          <input name="Prescriptions[]" type="file" accept=".jpg,.png" multiple="multiple" class="form-control" id="exampleFormControlInput1" />
@@ -146,6 +146,8 @@ Edit order
              @endforeach
          </select>
      </div>
+     @endif
+     @if($order->status=='waitingCustConfirmation')
      <div class="form-group">
          <label>Select medicines</label>
          <select class="select2 form-control" name='meds[]' multiple="multiple" data-placeholder="Select medicines" style="width: 100%;">
@@ -160,14 +162,7 @@ Edit order
              </div>
          </div>
      </div>
-     <div class="mb-3">
-         <label class="form-label">Status</label>
-         <select name="status" class="form-control">
-             <option value="confirmed">confirmed</option>
-             <option value="delivered">delivered</option>
-             <option value="cancelled">cancelled</option>
-         </select>
-     </div>
+     @endif
      <button type="submit" class="btn btn-success">Update order</button><br>
  </form><br>
  @endrole

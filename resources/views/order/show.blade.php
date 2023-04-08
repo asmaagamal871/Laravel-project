@@ -60,7 +60,7 @@ View order
                 </h4>
                 <div class="card-body">
                     <p class="card-text">Type: {{$medicine->medicine()->first()->type}}</p>
-                    <p class="card-text">Price: {{$medicine->medicine()->first()->price}}</p>
+                    <p class="card-text">Price: $ {{$medicine->medicine()->first()->price}}</p>
                     <p class="card-text">Quantity: {{$medicine->qty}}</p>
                 </div>
             </div><br>
@@ -73,10 +73,16 @@ View order
         </h4>
         <div class="card-body">
             <h4 class="card-title" style="font-weight: bold;padding:10px">
-               $ {{$order->total_price}} 
+                $ {{$order->total_price}}
             </h4>
         </div>
     </div><br>
+    @role('end-user')
+    <div >
+        <a href="" class="mt-4 btn btn-success">Confirm</a>
+        <a href="" class=" mt-4 btn btn-danger">Cancel</a>
+    </div><br>
+    @endrole
     @endif
 </div>
 @endsection

@@ -158,12 +158,11 @@ class OrderController extends Controller
 
         if ($user->hasRole('admin')) { //if admin
 
-            $addresses = Address::all();
             $allUsers = EndUser::all();
             $order = Order::find($id);
             $medicines = Medicine::all();
-
-            return view('order.edit', ['addresses' => $addresses, 'all_users' => $allUsers,'order'=>$order,'medicines'=>$medicines]);
+            $addresses = $order->user()->first()->addresses()->get();
+            return view('order.edit', ['addresses' => $addresses, 'all_users' => $allUsers, 'order' => $order, 'medicines' => $medicines]);
         } else if ($user->hasRole('end-user')) { //if end user
             $order = Order::find($id);
             $addresses = Address::where('end_user_id', $user->typeable->id)->get();
@@ -208,7 +207,7 @@ class OrderController extends Controller
 
         $user = Auth::user();
         $order = Order::find($id);
-        if ($user->hasRole('end-user')) { //if end user
+        if ($user->hasAnyRole(['admin', 'end-user'])) { //if end user
             $order->update([
                 'is_insured' => request()->radio,
                 'address_id' => request()->address
@@ -238,10 +237,10 @@ class OrderController extends Controller
                     ]);
                 }
             }
-
-            return to_route('orders.index');
+            if ($user->hasRole('end-user'))
+                return to_route('orders.index');
         }
-        if ($user->hasRole('pharmacy')) { //if pharmacy
+        if ($user->hasAnyRole(['admin', 'pharmacy'])) { //if pharmacy
 
             $medicines = request()->input('meds'); //array of medicine id's
             $quantity = request()->input('quantity');
@@ -280,8 +279,8 @@ class OrderController extends Controller
                 $order->status = 'waitingCustConfirmation';
                 $order->save();
             }
-
-            return to_route('orders.index');
+            if ($user->hasRole('pharmacy'))
+                return to_route('orders.index');
         }
         if ($user->hasRole('doctor')) { //if doctor
             $order = Order::find($id);
@@ -291,6 +290,8 @@ class OrderController extends Controller
             }
             return to_route('orders.index');
         }
+        if ($user->hasRole('admin'))
+            return to_route('orders.index');
     }
 
     public  function destroy($id)
