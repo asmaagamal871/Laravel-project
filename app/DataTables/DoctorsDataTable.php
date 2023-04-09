@@ -2,9 +2,8 @@
 
 namespace App\DataTables;
 
-use App\Models\Pharmacy;
+use App\Models\Doctor;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -13,7 +12,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class PharmaciesDataTable extends DataTable
+class DoctorsDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -23,30 +22,21 @@ class PharmaciesDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-        ->addColumn('action', function ($pharmacy) {
-            return view('pharmacies.actions', compact('pharmacy'));
+        ->addColumn('action', function ($doctor) {
+            return view('doctors.actions', compact('doctor'));
         })
-        ->addColumn('name', function (Pharmacy $pharmacy) {
-            return $pharmacy->type->name??"not found";
-        })
-        ->addColumn('created_at', function (Pharmacy $pharmacy) {
-            return date('Y-m-d', strtotime($pharmacy->created_at));
+        ->addColumn('name', function (Doctor $doctor) {
+            return $doctor->type->name??"";
         })
         
-
             ->setRowId('id');
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(Pharmacy $model): QueryBuilder
+    public function query(Doctor $model): QueryBuilder
     {
-        if (Auth::user()->hasRole(['admin'])) {
-            return $model->newQuery()->withoutTrashed();
-        } elseif (Auth::user()->hasRole('pharmacy')) {
-            // return $model->newQuery()->where('id', $user->id)->withTrashed();
-        } 
         return $model->newQuery();
     }
 
@@ -56,7 +46,7 @@ class PharmaciesDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('pharmacies-table')
+                    ->setTableId('doctors-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     //->dom('Bfrtip')
@@ -75,13 +65,10 @@ class PharmaciesDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-
             Column::make('id'),
-            // Column::make('add your columns'),
-
             Column::computed('name', 'name'),
             Column::make('created_at'),
-            // Column::make('updated_at'),
+            Column::make('updated_at'),
             Column::computed('action')
             ->exportable(false)
             ->printable(false)
@@ -95,6 +82,6 @@ class PharmaciesDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Pharmacies_' . date('YmdHis');
+        return 'Doctors_' . date('YmdHis');
     }
 }

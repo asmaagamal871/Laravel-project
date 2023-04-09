@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\DoctorsDataTable;
 use Illuminate\Http\Request;
 use App\Models\Doctor;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,6 @@ use App\Models\User;
 use App\Models\Address;
 use Illuminate\Console\Scheduling\Schedule;
 
-
 class DoctorController extends Controller
 {
     /**
@@ -24,24 +24,21 @@ class DoctorController extends Controller
 
 
 
-    public function index()
+    public function index(DoctorsDataTable $dataTable)
     {
-        $user = Auth::user();
-        if ($user->can('manage-doctors')) {
+        // $user = Auth::user();
+        // if ($user->can('manage-doctors')) {
+        //     $doctor = Doctor::all();
 
+        //     return view('doctors.index', ['doctors' => $doctor]);
+        // } elseif ($user->can('manage-own-doctors')) {
+        //     $doctor = Doctor::all();
 
-
-
-            $doctor = Doctor::all();
-
-            return view('doctors.index', ['doctors' => $doctor]);
-        } else if ($user->can('manage-own-doctors')) {
-            $doctor = Doctor::all();
-
-            return view('doctors.index', ['doctors' => $doctor]);
-        } else {
-            abort(403, 'Unauthorized action.');
-        }
+        //     return view('doctors.index', ['doctors' => $doctor]);
+        // } else {
+        //     abort(403, 'Unauthorized action.');
+        // }
+        return $dataTable->render('doctors.index');
     }
 
 
@@ -54,11 +51,9 @@ class DoctorController extends Controller
     {
         $user = Auth::user();
         if ($user->can('manage-doctors')) {
-
-
             $pharmacies = Pharmacy::all();
             return view('doctors.create', ['pharmacies' => $pharmacies]);
-        } else if ($user->can('manage-own-doctors')) {
+        } elseif ($user->can('manage-own-doctors')) {
             $pharmacies = Pharmacy::all();
             return view('doctors.create', ['pharmacies' => $pharmacies]);
         } else {
@@ -80,8 +75,6 @@ class DoctorController extends Controller
         }
         $user = Auth::user();
         if ($user->can('manage-doctors')) {
-
-
             $newUser = Doctor::factory()->create(
                 [
 
@@ -90,7 +83,7 @@ class DoctorController extends Controller
                     'pharmacy_id' => $data['pharmacy']
                 ]
             );
-        } else if ($user->can('manage-own-doctors')) {
+        } elseif ($user->can('manage-own-doctors')) {
             $newUser = Doctor::factory()->create(
                 [
 
@@ -134,15 +127,10 @@ class DoctorController extends Controller
     {
         $user = Auth::user();
         if ($user->can('manage-doctors')) {
-
-
-
-
-
             $doctor = Doctor::where('id', $id)->first();
             // dd($doctors);
             return view('doctors.show', ['doctors' => $doctor]);
-        } else if ($user->can('manage-own-doctors')) {
+        } elseif ($user->can('manage-own-doctors')) {
             $doctor = Doctor::where('id', $id)->first();
             // dd($doctors);
             return view('doctors.show', ['doctors' => $doctor]);
@@ -154,14 +142,12 @@ class DoctorController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit($id)
-
     {
         $user = Auth::user();
         if ($user->can('manage-doctors')) {
-
             $doctor = Doctor::find($id);
             return view('doctors.edit', ['doctor' => $doctor]);
-        } else if ($user->can('manage-own-doctors')) {
+        } elseif ($user->can('manage-own-doctors')) {
             $doctor = Doctor::find($id);
             return view('doctors.edit', ['doctor' => $doctor]);
         } else {
@@ -174,71 +160,53 @@ class DoctorController extends Controller
 
     public function update(Request $request, $id)
     {
-
         $user = Auth::user();
         if ($user->can('manage-doctors')) {
-            
-        
-        $doctor = Doctor::find($id);
-        // dd($doctor);
-        $doctor->national_id = $request->national_id;
-         $doctor->type->name = $request->name;
-        $doctor->type->email = $request->email;
-         $doctor->type->password = $request['password'];
-         $doctor->avatar = $request['avatar'];
-         $doctor->save();
-
-
-        $doctor->type->save();
-        return redirect()->route('doctors.index')->with(['updated successfully']);}
-
-        else if($user->can('manage-own-doctors'))
-        {
             $doctor = Doctor::find($id);
-        // dd($doctor);
-         $doctor->type->name = $request->name;
-         $doctor->type->email = $request->email;
-         $doctor->type->password = $request['password'];
-         $doctor->national_id = $request->national_id;
-         $doctor->save();
+            // dd($doctor);
+            $doctor->national_id = $request->national_id;
+            $doctor->type->name = $request->name;
+            $doctor->type->email = $request->email;
+            $doctor->type->password = $request['password'];
+            $doctor->avatar = $request['avatar'];
+            $doctor->save();
 
-        $doctor->type->save();
-        return redirect()->route('doctors.index')->with(['updated successfully']);
 
-        }
-        else {
+            $doctor->type->save();
+            return redirect()->route('doctors.index')->with(['updated successfully']);
+        } elseif ($user->can('manage-own-doctors')) {
+            $doctor = Doctor::find($id);
+            // dd($doctor);
+            $doctor->type->name = $request->name;
+            $doctor->type->email = $request->email;
+            $doctor->type->password = $request['password'];
+            $doctor->national_id = $request->national_id;
+            $doctor->save();
+
+            $doctor->type->save();
+            return redirect()->route('doctors.index')->with(['updated successfully']);
+        } else {
             abort(403, 'Unauthorized action.');
-        }}
+        }
+    }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-
-    
-{
-    $user = Auth::user();
-           if ($user->can('manage-doctors')) {
-
-
-    $doctor = Doctor::findOrFail($id); // find the doctor by its ID
-    $doctor->delete(); // delete the doctor
-    return redirect()->route('doctors.index')->with('success', 'Doctor deleted successfully.');
-}
-
-
-
-else if ($user->can('manage-own-doctors')) {
-
-    $doctor = Doctor::findOrFail($id); // find the doctor by its ID
-    $doctor->delete();
-    return redirect()->route('doctors.index')->with('success', 'Doctor deleted successfully.');
-
-}
-
-else {
-
-    abort(403, 'Unauthorized action.');
-}}
+    {
+        $user = Auth::user();
+        if ($user->can('manage-doctors')) {
+            $doctor = Doctor::findOrFail($id); // find the doctor by its ID
+            $doctor->delete(); // delete the doctor
+            return redirect()->route('doctors.index')->with('success', 'Doctor deleted successfully.');
+        } elseif ($user->can('manage-own-doctors')) {
+            $doctor = Doctor::findOrFail($id); // find the doctor by its ID
+            $doctor->delete();
+            return redirect()->route('doctors.index')->with('success', 'Doctor deleted successfully.');
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
 
 
@@ -247,8 +215,6 @@ else {
 // {
 //     return $this->avatar ? asset('storage/' . $this->avatar) : asset('img/default-avatar.png');
 // }
-
-
 }
 
 
@@ -272,18 +238,18 @@ else {
 
 
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
+
 //         $user = Auth::user();
 //         if ($user->can('manage-doctors')) {
 
