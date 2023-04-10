@@ -11,46 +11,26 @@
 </head>
 
 <body>
-    <h1>hello {{ $notifiable->name }} </h1>
+    <h1>hello <strong>{{ $notifiable->name }}</strong> </h1>
+    <div>
+        <p>
+        <h3>Address details: </h3>
+        </p>
+        <p>Area: {{ $order->address->area->name }}</p>
+        <p>Address:
+            {{ $order->address->st_name }}, {{ $order->address->building_no }},
+            {{ $order->address->floor_no }},{{ $order->address->flat_no }}
+        </p>
+    </div>
+    <div>
 
-    @if ($order->orderMedicines()->get()->first())
-        <div class="card mt-6">
-            <h4 class="card-header">
-                Medicines
-            </h4>
-            <div class="card-body">
-                @foreach ($order->orderMedicines()->get() as $medicine)
-                    <div class="card mt-6">
-                        <h4 class="card-title" style="font-weight: bold;padding:10px">
-                            {{ $medicine->medicine()->first()->name }}
-                        </h4>
-                        <div class="card-body">
-                            <p class="card-text">Type: {{ $medicine->medicine()->first()->type }}</p>
-                            <p class="card-text">Price: $ {{ $medicine->medicine()->first()->price }}</p>
-                            <p class="card-text">Quantity: {{ $medicine->qty }}</p>
-                        </div>
-                    </div><br>
-                @endforeach
-            </div>
-        </div><br>
-        <div class="card mt-6">
-            <h4 class="card-header">
-                Total price
-            </h4>
-            <div class="card-body">
-                <h4 class="card-title" style="font-weight: bold;padding:10px">
-                    $ {{ $order->total_price }}
-                </h4>
-            </div>
-        </div><br>
-        @role('end-user')
-            <div>
-                <a href="" class="mt-4 btn btn-success">Confirm</a>
-                <a href="" class=" mt-4 btn btn-danger">Cancel</a>
-            </div><br>
-        @endrole
-    @endif
 
+        @foreach ($order->orderMedicines()->get() as $item)
+            <p> <strong>Medicine Name: </strong>{{ $item->medicine->name }} </p>
+            <p> <strong>Quantity: </strong>{{ $item->qty }} </p>
+        @endforeach
+        <p><strong>Total Price: {{$order->total_price}}</strong></p>
+    </div>
 
 
     <div class="btn-container">

@@ -134,8 +134,10 @@ class OrderController extends Controller
                 }
             }
 
-            $orderMedicines = $order->orderMedicines()->get();
+            $orderMedicines = $order->orderMedicines()->get(); //collection
+            // dd($order->address) ;
             foreach ($orderMedicines as $record) {
+                
                 $total_price = $total_price + ($record->qty * $record->medicine()->first()->price);
             }
             $order->total_price = $total_price;
@@ -145,7 +147,7 @@ class OrderController extends Controller
 
             if ($order->status == "waitingCustConfirmation") {
                 $enduser2 = User::where('id', '=', $order->user->type->id)->first();
-                // dd($order->user->type->id);
+
                 dispatch(new OrderConfirmationJob($enduser2, $order));
             }
 
@@ -324,11 +326,11 @@ class OrderController extends Controller
             abort(403, 'Unauthorized request.');
         }
     }
-    // public function confirm($id){
-    //     $order = Order::find($id);
-    //     $order->status='confirmed';
-    //     $order->save();
-    // }
+    public function confirm($id){
+        $order = Order::find($id);
+        $order->status='confirmed';
+        $order->save();
+    }
     // public function cancel($id){
     //     $order = Order::find($id);
     //     $order->status='cancelled';

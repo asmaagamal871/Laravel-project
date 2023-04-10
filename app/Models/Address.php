@@ -30,7 +30,6 @@ class Address extends Model
     }
     public function type()
     {
-        return $this->morphOne(User::class,'typeable');
+        return $this->morphOne(User::class, 'typeable');
     }
-   
 }

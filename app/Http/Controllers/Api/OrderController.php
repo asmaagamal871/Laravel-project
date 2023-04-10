@@ -16,6 +16,7 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         $allOrders = Order::where('user_id', $user->typeable->id)->get();
+        
         // return view('order.index', ['orders' => $allOrders]);  
     }
 
