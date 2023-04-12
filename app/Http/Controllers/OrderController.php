@@ -326,14 +326,15 @@ class OrderController extends Controller
             abort(403, 'Unauthorized request.');
         }
     }
-    public function confirm($id){
-        $order = Order::find($id);
-        $order->status='confirmed';
-        $order->save();
-    }
-    // public function cancel($id){
+    // public function confirm($id){
     //     $order = Order::find($id);
-    //     $order->status='cancelled';
+    //     $order->status='confirmed';
     //     $order->save();
     // }
+    public function cancel($id){
+        $order = Order::find($id);
+        $order->status='cancelled';
+        $order->save();
+        return view('cancel');
+    }
 }

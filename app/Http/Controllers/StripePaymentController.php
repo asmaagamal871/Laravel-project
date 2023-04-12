@@ -1,7 +1,8 @@
 <?php
     
 namespace App\Http\Controllers;
-     
+
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Session;
 use Stripe;
@@ -13,11 +14,13 @@ class StripePaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function stripe()
+    public function stripe($id)
     {
-        return view('stripe');
+        $order = Order::where('id', $id)->first();
+        // dd($order);
+        return view('stripe', compact('order'));
     }
-    
+
     /**
      * success response method.
      *
@@ -25,17 +28,10 @@ class StripePaymentController extends Controller
      */
     public function stripePost(Request $request)
     {
-        Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-    
-        Stripe\Charge::create ([
-                "amount" => 100 * 100,
-                "currency" => "usd",
-                "source" => $request->stripeToken,
-                "description" => "Test payment from itsolutionstuff.com." 
-        ]);
-      
-        Session::flash('success', 'Payment successful!');
-              
-        return back();
+        $order_id=$request->order_id;
+        $order = Order::where('id', $order_id)->first();
+        $order->status="confirmed";
+        $order->save();
+        return view('confirm');
     }
 }

@@ -35,9 +35,9 @@
 
     <div class="btn-container">
         <form action="">
-            <button type="submit" class="btn btn-success">Confirm Order</button>
+            <a href="{{route('stripe.get',$order->id)}}" type="submit" class="btn btn-success">Confirm Order</a>
         </form>
-        <a href="" type="submit" class="btn btn-danger" disabled>Cancel Order</a>
+        <a href="{{route('orders.cancel',$order->id)}}" type="submit" class="btn btn-danger" disabled>Cancel Order</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

@@ -16,6 +16,7 @@ use App\Models\Area;
 //need to use pharmacy controller
 
 use App\Http\Controllers\PharmacyController;
+use App\Http\Controllers\StripePaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,10 +53,10 @@ Route::group(['middleware' => ['auth']], function () {
 //stripe
   
  
-// Route::controller(StripePaymentController::class)->group(function(){
-//     Route::get('stripe', 'stripe');
-//     Route::post('stripe', 'stripePost')->name('stripe.post');
-// });
+Route::controller(StripePaymentController::class)->group(function(){
+    Route::get('stripe/{id}', 'stripe')->name('stripe.get');
+    Route::post('stripe', 'stripePost')->name('stripe.post');
+});
 
 
 //addresses
@@ -81,6 +82,7 @@ Route::group(['middleware' => ['auth']], function () {
     // Route::group(['middleware' => ['permission:manage-own-orders']], function () {
     Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/cancel/{id}', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
 
 Auth::routes();

@@ -15,7 +15,7 @@
         "laravel/ui": "^4.2",
         "select2/select2": "^4.0",
         "spatie/laravel-permission": "^5.10",
-        "stripe/stripe-php": "^10.11",
+        "stripe/stripe-php": "^10.12",
         "yajra/laravel-datatables": "^10.0",
         "yajra/laravel-datatables-oracle": "^10.4"
     },
