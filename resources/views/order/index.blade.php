@@ -16,7 +16,7 @@
         <div style="margin: 40px;">
             @hasanyrole('admin|end-user|pharmacy')
                 <div class="text-center">
-                    <a href="{{ route('orders.create') }}" class="mt-4 btn btn-success">Create order</a>
+                    <a href="{{ route('orders.create') }}" class="mb-4 btn btn-success">Create order</a>
                 </div>
             @endhasanyrole
             <div class="card">

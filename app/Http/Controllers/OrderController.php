@@ -30,8 +30,8 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::find(1);
-        $user = User::find(5);
+        $order = Order::find($id);
+        // $user = User::find(5);
         // dispatch(new OrderConfirmationJob($user, $order));
 
         return view('order.show', ['order' => $order]);
@@ -78,7 +78,7 @@ class OrderController extends Controller
                 $address = Address::find(request()->address);
                 if ($address->end_user()->first() == $end_user) {
                     $order->creator_type = 'admin';
-                    $order->user()->associate($end_user);
+                    $order->endUser()->associate($end_user);
                     $order->save();
                 } else {
                     return redirect()->route('orders.create')->with(
@@ -89,7 +89,7 @@ class OrderController extends Controller
             } else { //if end user
                 $order->creator_type = 'user';
                 $user = $user->typeable;
-                $order->user()->associate($user);
+                $order->endUser()->associate($user);
                 $order->save();
             }
             $Prescriptions = request()->file("Prescriptions");
@@ -146,7 +146,7 @@ class OrderController extends Controller
             $order->save();
 
             if ($order->status == "waitingCustConfirmation") {
-                $enduser2 = User::where('id', '=', $order->user->type->id)->first();
+                $enduser2 = User::where('id', '=', $order->endUser->type->id)->first();
 
                 dispatch(new OrderConfirmationJob($enduser2, $order));
             }
@@ -165,7 +165,7 @@ class OrderController extends Controller
             $allUsers = EndUser::all();
             $order = Order::find($id);
             $medicines = Medicine::all();
-            $addresses = $order->user()->first()->addresses()->get();
+            $addresses = $order->endUser()->first()->addresses()->get();
             return view('order.edit', ['addresses' => $addresses, 'all_users' => $allUsers, 'order' => $order, 'medicines' => $medicines]);
         } elseif ($user->hasRole('end-user')) { //if end user
             $order = Order::find($id);

@@ -17,8 +17,8 @@ return new class () extends Migration {
             $table->boolean('is_insured');
             $table->unsignedBigInteger('address_id');
             $table->foreign('address_id')->references('id')->on('addresses');
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('end_users');
+            $table->unsignedBigInteger('end_user_id')->nullable();
+            $table->foreign('end_user_id')->references('id')->on('end_users');
             $table->unsignedBigInteger('doctor_id')->nullable();
             $table->foreign('doctor_id')->references('id')->on('doctors');
             $table->unsignedBigInteger('pharmacy_id')->nullable();

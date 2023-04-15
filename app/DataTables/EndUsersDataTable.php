@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\EndUser;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -29,13 +30,24 @@ class EndUsersDataTable extends DataTable
             ->addColumn('name', function (EndUser $endUser) {
                 return $endUser->type->name??"";
             })
-            ->addColumn('name', function (EndUser $endUser) {
+            ->addColumn('Image', function (EndUser $endUser) {
+
+                
+                return '
+                <div class="text-center">
+                <img class="img-circle img-bordered-sm" src="'.Storage::url($endUser->image).'" width="40px"
+                height="40px" >
+                </div>
+                ';
+            })
+            ->addColumn('email', function (EndUser $endUser) {
                 return $endUser->type->email??"";
             })
             ->addColumn('created_at', function (EndUser $user) {
                 return date('Y-m-d', strtotime($user->created_at));
             })
-    
+            ->rawColumns(['Image'])
+
             ->setRowId('id');
     }
 
@@ -60,7 +72,7 @@ class EndUsersDataTable extends DataTable
                     ->orderBy(1)
                     ->selectStyleSingle()
                     ->buttons([
-                       
+
                         Button::make('print'),
                         Button::make('reset'),
                         Button::make('reload')
@@ -73,11 +85,13 @@ class EndUsersDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-           
+
             Column::make('id'),
-            Column::computed('name','name'),
-            Column::computed('name','name'),
-            
+
+            Column::make('name'),
+            Column::computed('Image', 'Image'),
+            Column::computed('email', 'email'),
+
             Column::make('created_at'),
             Column::computed('action')
             ->exportable(false)

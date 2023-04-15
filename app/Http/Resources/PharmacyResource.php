@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Models\EndUser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class PharmacyResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +14,6 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'name'=>$this->name,
-            'email'=>$this->email,
-        ];
+        return ['user'=>new UserResource($this->type),];
     }
 }

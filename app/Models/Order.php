@@ -20,7 +20,7 @@ class Order extends Model
         'pharmacy_id',
         'doctor_id'
     ];
-    public function user()
+    public function endUser()
     {
         return $this->belongsTo(EndUser::class);
     }

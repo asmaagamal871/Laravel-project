@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\VerificationController;
 use Illuminate\Http\Request;
@@ -41,6 +42,12 @@ Route::post('/addresses', [AddressController::class, 'store'])->name('Addresses.
 Route::put('/addresses/{id}', [AddressController::class, 'update'])->middleware('auth:sanctum');
 Route::get('addresses', [AddressController::class,'index'])->middleware('auth:sanctum');
 Route::delete('/addresses/{id}', [AddressController::class, 'destroy'])->name('users.destroy')->middleware('auth:sanctum');
+
+Route::post('/orders', [OrderController::class, 'store'])->name('orders.store')->middleware('auth:sanctum');
+Route::put('/orders/{id}', [OrderController::class, 'update'])->name('orders.update')->middleware('auth:sanctum');
+Route::get('orders', [OrderController::class,'index'])->name('orders.index')->middleware('auth:sanctum');
+Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy')->middleware('auth:sanctum');
+Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show')->middleware('auth:sanctum');
 
 
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');

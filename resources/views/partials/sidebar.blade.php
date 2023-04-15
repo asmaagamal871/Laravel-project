@@ -53,7 +53,7 @@
             @endhasrole
             @hasrole('admin')
             <li class="nav-item">
-              <a href="{{route('users.index')}}" class="nav-link">
+              <a href="{{route('pharmacies.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Pharmacies</p>
               </a>
@@ -61,7 +61,7 @@
             @endhasrole
             @hasanyrole('admin|pharmacy')
             <li class="nav-item">
-              <a href="{{route('users.index')}}" class="nav-link">
+              <a href="{{route('doctors.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Doctors</p>
               </a>
@@ -71,7 +71,7 @@
             <li class="nav-item">
               <a href="{{route('addresses.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Useraddress</p>
+                <p>Addresses</p>
               </a>
             </li>
             @endhasanyrole
@@ -80,6 +80,14 @@
               <a href="{{route('medicines.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Medicines</p>
+              </a>
+            </li>
+            @endhasanyrole
+            @hasanyrole('admin|end-user|pharmacy')
+            <li class="nav-item">
+              <a href="{{route('orders.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Orders</p>
               </a>
             </li>
             @endhasanyrole

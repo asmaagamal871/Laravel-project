@@ -27,9 +27,26 @@ class OrdersDataTable extends DataTable
         ->addColumn('action', function ($order) {
             return view('order.actions', compact('order'));
         })
+        ->addColumn('insured', function (Order $order) {
+            if($order->is_insured==1){
+                return 'Yes' ;
 
+            }else{
+                return 'No';
+            }
+        })
+        ->addColumn('Address', function (Order $order) {
+
+            return "".$order->address->st_name.", ".$order->address->building_no.", ".$order->address->floor_no.",  ".$order->address->flat_no."";
+        })
         ->addColumn('User', function (Order $order) {
-            return $order->user->type->name??"";
+            return $order->endUser->type->name??"";
+        })
+        ->addColumn('Doctor', function (Order $order) {
+            return $order->doctor->type->name??"";
+        })
+        ->addColumn('Pharmacy', function (Order $order) {
+            return $order->pharmacy->type->name??"";
         })
         ->addColumn('created_at', function (Order $order) {
             return date('Y-m-d', strtotime($order->created_at));
@@ -48,7 +65,7 @@ class OrdersDataTable extends DataTable
         if (Auth::user()->hasRole('admin')) {
             return $model->newQuery();
         } elseif (Auth::user()->hasRole('end-user')) {
-            return $model->newQuery()->where('user_id', Auth::user()->typeable->id);
+            return $model->newQuery()->where('end_user_id', Auth::user()->typeable->id);
         } elseif (Auth::user()->hasRole('pharmacy')) {
             return $model->newQuery()->where('pharmacy_id', Auth::user()->typeable->id);
         } elseif (Auth::user()->hasRole('doctor')) {
@@ -86,9 +103,14 @@ class OrdersDataTable extends DataTable
             // Column::make('delivery_address_id'),
             // Column::computed('pharmacy','pharmacy'),
             Column::computed('User', 'User'),
+            Column::make('Address'),
             Column::make('status'),
-            Column::computed('created_at', 'created_at'),
-            Column::computed('updated_at', 'updated_at'),
+            Column::make('Pharmacy'),
+            Column::make('Doctor'),
+            Column::make('insured'),
+
+            // Column::computed('created_at', 'created_at'),
+            // Column::computed('updated_at', 'updated_at'),
             // Column::make('updated_at'),
             Column::computed('action')
                   ->exportable(false)

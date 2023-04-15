@@ -11,7 +11,12 @@
             <h4 class="card-header">
                 Order Information </h4>
             <div class="card-body">
-                <h4 class="card-title" style="font-weight: bold;">Name: {{ $order->user()->first()->type->name }}</h4>
+
+                
+                <h4 class="card-title" style="font-weight: bold;">Name: {{ $order->endUser()->first()->type->name }}</h4>
+             <br>
+             <br>
+           
                 <p class="card-text">Delivery address: {{ $order->address()->first()->area()->first()->name }},
                     {{ $order->address()->first()->st_name }}, {{ $order->address->building_no }},
                     {{ $order->address->floor_no }}, {{ $order->address->flat_no }}</p>

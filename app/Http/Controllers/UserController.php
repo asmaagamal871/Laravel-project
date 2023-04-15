@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreUserRequest;
+use App\Models\Address;
 use App\Models\EndUser;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
@@ -26,7 +27,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $path = 'public/doctors/default.png';
+        $path = 'public/default.png';
         if ($request['image']) {
             $path = Storage::putFileAs(
                 'public/endUsers',
@@ -35,6 +36,9 @@ class UserController extends Controller
             );
         }
 
+        
+        
+
         $newUser = EndUser::factory()->create(
             [
                 'gender' => $request['gender'],
@@ -42,8 +46,10 @@ class UserController extends Controller
                 'DOB'=>$request['DOB'],
                 'national_id'=>$request['national_id'],
                 'mob_num'=>$request['mob_num'],
+                'image'=>$path,
             ]
         );
+        
 
         $mainUser = User::factory()->create(
             [
@@ -126,15 +132,28 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::find($id);
+       
 
-        $endUser=EndUser::find($user->typeable_id);
-
-        if ($endUser->image && Storage::exists($endUser->image)) {
-            Storage::delete($endUser->image);
+        $endUser=EndUser::find($id);
+        // dd(User::where('typeable_id',$endUser->id)->first());
+        $user = User::where('typeable_id',$endUser->id)->first();
+        // dd($endUser);
+        $hasOrders = $endUser->orders()->exists();
+        if ($hasOrders) {
+            // dd('hoo');
+            return redirect()->back()->with('error', 'This client has existing orders and cannot be deleted.');
+        }else{
+            // dd('hii');
+            if ($endUser->image && Storage::exists($endUser->image)) {
+                Storage::delete($endUser->image);
+            }
+            $endUser->addresses()->delete();
+            $endUser->type->delete();
+            $endUser->delete();
+            $user->delete();
+            return redirect()->back()->with('success', ' client deleted successfully.');
         }
-        $endUser->delete();
-        $user->delete();
-        return redirect()->route('users.index');
+        // dd($endUser->orders()->exists());
+        
     }
 }

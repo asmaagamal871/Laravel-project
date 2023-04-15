@@ -29,6 +29,7 @@ class AddressController extends Controller
     public function update(Request $request, $id)
     {
         $user = Auth::user()->typeable->id;
+        dd($user);
         $address=Address::find($id);
 
         if ($address->end_user_id==$user) {
